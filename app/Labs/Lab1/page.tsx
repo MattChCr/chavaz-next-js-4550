@@ -1,4 +1,5 @@
 import Image from "next/image";
+/* eslint-disable react/no-unescaped-entities */
 
 export default function Lab1() {
     return (
