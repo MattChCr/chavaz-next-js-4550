@@ -1,73 +1,113 @@
+'use client';
+
+import { Form } from "react-bootstrap";
+
 export default function AssignmentEditor() {
   return (
     <div id="wd-assignments-editor">
-      <label htmlFor="wd-name">Assignment Name</label>
-      <input id="wd-name" value="A1 - ENV + HTML" /><br/>
-      <textarea id="wd-description">
-        The assignment is available online Submit a link to the landing page of
-      </textarea>
-      <br />
-      <table>
-        <tr>
-          <td align="right" valign="top">
-            <label htmlFor="wd-points">Points</label>
-          </td>
-          <td>
-            <input id="wd-points" value={100} />
-          </td>
-        </tr>
-        <label htmlFor="wd-select-one-genre">
-    Assignment Group: </label><br/>
-<select id="wd-select-one-genre">
-   <option value="ASSIGNMENT">Assignment</option>
-   <option value="QUIZ">Quiz</option>
-   <option selected value="EXAM">Exam</option>
-   <option value="PROJECT">Project</option>
-</select><br/>
-<label htmlFor="wd-select-one-genre">
-    Display Grade: </label><br/>
-<select id="wd-select-one-genre">
-   <option value="YES">Yes</option>
-   <option value="NO">No</option>
-</select><br/>
-<label htmlFor="wd-select-one-genre">
-    Submission Type: </label><br/>
-<select id="wd-select-one-genre">
-   <option value="FILE">File</option>
-   <option value="TEXT">Text</option>
-      <option value="NONE">None</option>
-</select> <br/>
-<label>Online Entry Options:</label><br/>
+      <Form style={{ maxWidth: 600 }} className="p-3 border rounded">
 
-<input type="checkbox" name="check-genre" id="wd-chkbox-pdf"/>
-<label htmlFor="wd-chkbox-pdf">PDF</label><br/>
+      <Form.Group className="mb-3" id="wd-assignments-editor-name">
+        <Form.Label>Assignment Name</Form.Label>
+        <Form.Control type="text" defaultValue="A1" />
+      </Form.Group>
 
-<input type="checkbox" name="check-genre" id="wd-chkbox-link"/>
-<label htmlFor="wd-chkbox-link">Link</label><br/>
+      <Form.Group className="mb-3" id="wd-assignments-editor-description">
+        <Form.Label>Description</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={13}
+          defaultValue={`The assignment is available online
 
-<input type="checkbox" name="check-genre" id="wd-chkbox-slides"/>
-<label htmlFor="wd-chkbox-slides">Slides</label><br/>
+Submit a link to the landing page of your Web application running on Netlify.
 
-<h3>Assign to</h3>
-<input defaultValue="Everyone" placeholder="Assign to.." /> <br />
+The landing page should include the following:
 
-<label htmlFor="wd-text-fields-due">
-Due Date: </label>
-<input type="date"
-      id="wd-text-fields-due"
-      value="2025-09-19"/><br/>
+- Your full name and section
+- Links to each of the lab assignments
+- Link to the Kanbas application
+- Links to all relevant source code repositories
 
-      <label htmlFor="wd-text-fields-available">
-Available from: </label>
-<input type="date"
-      id="wd-text-fields-available"
-      value="2025-09-09"/><br/>
+The Kanbas application should include a link to navigate back to the landing page.`}
+          style={{ resize: "none" }}
+        />
+      </Form.Group>
 
-      <label htmlFor="wd-text-fields-until">
-Until: </label>
-<input type="date"
-      id="wd-text-fields-until"
-      value="2025-09-20"/><br/>
-      </table>
-    </div>
+      <Form.Group className="mb-3" id="wd-assignments-points">
+        <Form.Label>Points</Form.Label>
+        <Form.Control
+          type="number"
+          defaultValue={100}
+          />
+      </Form.Group>
+
+      <Form.Group className="mb-3" id="wd-assignments-group">
+        <Form.Label>Assignment Group</Form.Label>
+        <Form.Select defaultValue="ASSIGNMENTS">
+          <option>ASSIGNMENTS</option>
+          <option>QUIZZES</option>
+          <option>PROJECTS</option>
+          <option>EXAMS</option>
+        </Form.Select>
+      </Form.Group>
+
+      <Form.Group className="mb-3" id="wd-assignments-grade-display">
+        <Form.Label>Display Grade as</Form.Label>
+        <Form.Select defaultValue="Percentage">
+          <option>Percentage</option>
+          <option>Points</option>
+          <option>Letter Grade</option>
+        </Form.Select>
+      </Form.Group>
+
+      <Form.Group className="mb-3" id="wd-assignments-submission-type">
+        <Form.Label>Submission Type</Form.Label>
+        <Form.Select defaultValue="Online">
+          <option>Online</option>
+          <option>In-Person</option>
+          <option>None</option>
+        </Form.Select>
+      </Form.Group>
+
+      <fieldset className="mb-3">
+        <legend>Online Entry Options</legend>
+        <Form.Check
+          type="checkbox"
+          id="textEntry"
+          label="Text Entry"
+          defaultChecked={false}
+        />
+        <Form.Check
+          type="checkbox"
+          id="websiteUrl"
+          label="Website URL"
+          defaultChecked={true}
+        />
+        <Form.Check
+          type="checkbox"
+          id="mediaRecordings"
+          label="Media Recordings"
+          defaultChecked={false}
+        />
+        <Form.Check
+          type="checkbox"
+          id="studentAnnotation"
+          label="Student Annotation"
+          defaultChecked={false}
+        />
+        <Form.Check
+          type="checkbox"
+          id="fileUploads"
+          label="File Uploads"
+          defaultChecked={false}
+        />
+      </fieldset>
+
+      <Form.Group id="wd-assignments-assign-to" className="mb-3">
+        <Form.Label>Assign to</Form.Label>
+        <Form.Control type="text" defaultValue="Everyone" />
+      </Form.Group>
+    </Form>
+
+      </div>
 );}
