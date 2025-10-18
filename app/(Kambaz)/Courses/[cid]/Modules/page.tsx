@@ -8,10 +8,11 @@ import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
 
 import { useParams } from "next/navigation";
-import * as db from "../../../Database";
+import { modules } from "../../../Database";
+import type { Lesson } from "../../../Database";
+
 export default function Modules() {
   const { cid } = useParams();
-  const modules = db.modules;
   return (
       <ListGroup id="wd-modules" className="rounded-0">
         {modules
@@ -23,9 +24,9 @@ export default function Modules() {
             </div>
             {module.lessons && (
               <ListGroup className="wd-lessons rounded-0">
-                {module.lessons.map((lesson: any) => (
+                {module.lessons.map((Lesson: any) => (
                   <ListGroupItem className="wd-lesson p-3 ps-1">
-                    <BsGripVertical className="me-2 fs-3" /> {lesson.name} <LessonControlButtons />
+                    <BsGripVertical className="me-2 fs-3" /> {Lesson.name} <LessonControlButtons />
                   </ListGroupItem>
                 ))}</ListGroup>)}</ListGroupItem>))}</ListGroup>
 );}
