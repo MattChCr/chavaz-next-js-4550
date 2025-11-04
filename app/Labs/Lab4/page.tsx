@@ -1,4 +1,5 @@
 "use client"
+
 import PassingFunctions from "./PassingFunctions";
 import ClickEvent from "./ClickEvent";
 import PassingDataOnEvent from "./PassingDataOnEvent";
@@ -11,7 +12,7 @@ import ObjectStateVariable from "./ObjectStateVariable";
 import ArrayStateVariable from "./ArrayStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
 import ChildStateComponent from "./ChildStateComponent";
-import ReduxExamples from "./ReduxExamples/page";
+import ReduxExamples from "./ReduxExamples/ReduxExamples";
 import { store }  from "./store";
 import { Provider } from "react-redux";
 
