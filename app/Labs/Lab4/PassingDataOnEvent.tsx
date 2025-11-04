@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 const add = (a: number, b: number) => {
   alert(`${a} + ${b} = ${a + b}`);
 };

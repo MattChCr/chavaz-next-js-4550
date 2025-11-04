@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 export default function PassingFunctions(
  { theFunction }: { theFunction: () => void }) {
   return (

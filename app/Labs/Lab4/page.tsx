@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import PassingFunctions from "./PassingFunctions";
 import ClickEvent from "./ClickEvent";
