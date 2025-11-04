@@ -5,6 +5,7 @@ import usersJson from "./users.json";
 import enrollmentsJson from "./enrollments.json";
 
 export type Course = {
+  image: string;
   _id: string;
   name: string;
   number: string;
@@ -17,6 +18,8 @@ export type Course = {
 };
 
 export type Module = {
+  editing: any;
+  _id: string;
   name: string;
   description: string;
   course: string;     

@@ -1,50 +1,59 @@
-'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import Form from 'react-bootstrap/Form';
-
+"use client";
+import { redirect } from "next/dist/client/components/navigation";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrentUser } from "../reducer";
+import { RootState } from "../../store";
+import { Button, FormControl } from "react-bootstrap";
 export default function Profile() {
-  return (
-    <div id="wd-profile-screen" className="p-5">
-      <h1>Profile</h1>
-
-      <Form>
-        <Form.Group className="mb-3" controlId="wd-profile-username">
-          <Form.Control type="text" defaultValue="aliceuser" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="wd-profile-password">
-          <Form.Control type="text" defaultValue="12345" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="wd-profile-name">
-          <Form.Control type="text" defaultValue="Alice" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="wd-profile-lastname">
-          <Form.Control type="text" defaultValue="Wonderland" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="wd-profile-email">
-          <Form.Control type="text" defaultValue="wonderland.a@northeastern.edu" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="wd-profile-dob">
-          <Form.Control type="date" defaultValue="08/01/2005" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="wd-profile-type">
-          <Form.Control type="text" defaultValue="User" />
-        </Form.Group>
-
-        <Link
-          id="wd-sign-btn"
-          href="/Account/Profile"
-          className="btn btn-danger w-100 mb-2">
-          Signout
-        </Link>
-      </Form>
-    </div>
-  );
-}
+ const [profile, setProfile] = useState<any>({});
+ const dispatch = useDispatch();
+ const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+ const fetchProfile = () => {
+   if (!currentUser) return redirect("/Account/Signin");
+   setProfile(currentUser);
+ };
+ const signout = () => {
+   dispatch(setCurrentUser(null));
+   redirect("/Account/Signin");
+ };
+ useEffect(() => {
+   fetchProfile();
+ }, []);
+ return (
+   <div className="wd-profile-screen">
+     <h3>Profile</h3>
+     {profile && (
+       <div>
+         <FormControl id="wd-username" className="mb-2"
+           defaultValue={profile.username}
+           onChange={(e) => setProfile({ ...profile, username: e.target.value }) } />
+         <FormControl id="wd-password" className="mb-2"
+           defaultValue={profile.password}
+           onChange={(e) => setProfile({ ...profile, password: e.target.value }) } />
+         <FormControl id="wd-firstname" className="mb-2"
+           defaultValue={profile.firstName}
+           onChange={(e) => setProfile({ ...profile, firstName: e.target.value }) } />
+         <FormControl id="wd-lastname" className="mb-2"
+           defaultValue={profile.lastName}
+           onChange={(e) => setProfile({ ...profile, lastName: e.target.value }) } />
+         <FormControl id="wd-dob" className="mb-2" type="date"
+           defaultValue={profile.dob}
+           onChange={(e) => setProfile({ ...profile, dob: e.target.value })} />
+         <FormControl id="wd-email" className="mb-2"
+           defaultValue={profile.email}
+           onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
+         <select className="form-control mb-2" id="wd-role" 
+           onChange={(e) => setProfile({ ...profile, role: e.target.value })} >
+           <option value="USER">User</option>
+           <option value="ADMIN">Admin</option>
+           <option value="FACULTY">Faculty</option>{" "}
+           <option value="STUDENT">Student</option>
+         </select>
+         <Button onClick={signout} className="w-100 mb-2" id="wd-signout-btn">
+           Sign out
+         </Button>
+       </div>
+     )}
+   </div>
+);}
