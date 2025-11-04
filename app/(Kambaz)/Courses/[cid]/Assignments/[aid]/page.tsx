@@ -1,3 +1,4 @@
+'use client'
 import { useParams, useRouter } from "next/navigation";
 import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
