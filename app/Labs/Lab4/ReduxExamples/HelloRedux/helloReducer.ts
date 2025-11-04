@@ -1,4 +1,3 @@
-'use client';
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const helloSlice = createSlice({
@@ -12,10 +11,4 @@ const helloSlice = createSlice({
 });
 
 export const { setMessage } = helloSlice.actions;
-
-export const store = configureStore({
-  reducer: { hello: helloSlice.reducer },
-});
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export default helloSlice.reducer;

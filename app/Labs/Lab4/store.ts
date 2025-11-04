@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import helloReducer from "./ReduxExamples/HelloRedux";
-import counterReducer from "./ReduxExamples/CounterRedux";
-import addReducer from "./ReduxExamples/AddRedux";
+import helloReducer from "./ReduxExamples/HelloRedux/helloReducer";
+import counterReducer from "./ReduxExamples/CounterRedux/counterReducer";
+import addReducer from "./ReduxExamples/AddRedux/addReducer";
 import todosReducer from "./ReduxExamples/todos/todosReducer";
 
 export const store = configureStore({
