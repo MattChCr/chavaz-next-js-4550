@@ -6,11 +6,12 @@ import { useParams } from "next/navigation";
 import { RootState } from "../../store";
 import { FaAlignJustify } from "react-icons/fa";
 import Breadcrumb from "./Breadcrumb";
+import type { Course } from "../../Database";
 
 export default function CoursesLayout({ children }: { children: ReactNode }) {
   const { cid } = useParams();
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
-  const course = courses.find((course: any) => course._id === cid);
+  const course: Course | undefined = courses.find((course: Course) => course._id === cid);
 
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
@@ -30,7 +31,7 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
         <div className={sidebarVisible ? "d-block" : "d-none"}>
           <CourseNavigation />
         </div>
-        <br></br>
+        <br />
         <div className="flex-fill">{children}</div>
       </div>
     </div>

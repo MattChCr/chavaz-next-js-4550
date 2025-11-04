@@ -30,10 +30,19 @@ export default function AssignmentPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (assignment) {
       dispatch(updateAssignment({ ...assignment, title, description }));
     } else {
-      dispatch(addAssignment({ id: aid || crypto.randomUUID(), title, description }));
+      dispatch(addAssignment({
+        title, description,
+        course: "",
+        availableFrom: "",
+        availableUntil: "",
+        assignTo: "",
+        dueDate: "",
+        points: 0
+      }));
     }
   };
 

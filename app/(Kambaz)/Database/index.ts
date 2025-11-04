@@ -17,20 +17,20 @@ export type Course = {
   author?: string;
 };
 
-export type Module = {
-  editing: any;
-  _id: string;
-  name: string;
-  description: string;
-  course: string;     
-  lessons: Lesson[];
-};
-
 export type Lesson = {
   id: string;
   name: string;
   description: string;
   module: string;
+};
+
+export type Module = {
+  editing: boolean;
+  _id: string;
+  name: string;
+  description: string;
+  course: string;
+  lessons: Lesson[];
 };
 
 export type Assignment = {
@@ -39,9 +39,9 @@ export type Assignment = {
   course: string;
   description: string;
   availableFrom: string;
-  availableUntil: string; 
-  assignTo: string; 
-  dueDate: string;         
+  availableUntil: string;
+  assignTo: string;
+  dueDate: string;
   points: number;
 };
 
@@ -58,14 +58,13 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
-  dob: string; 
-  role: "STUDENT" | "INSTRUCTOR" | "ADMIN"; 
+  dob: string;
+  role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
   loginId: string;
   section: string;
   lastActivity: string;
   totalActivity: string;
 };
-
 
 const courses = coursesJson as Course[];
 const modules = modulesJson as Module[];
@@ -73,4 +72,4 @@ const assignments = assignmentsJson as Assignment[];
 const users = usersJson as User[];
 const enrollments = enrollmentsJson as Enrollment[];
 
-export { courses, modules, assignments, users, enrollments};
+export { courses, modules, assignments, users, enrollments };
