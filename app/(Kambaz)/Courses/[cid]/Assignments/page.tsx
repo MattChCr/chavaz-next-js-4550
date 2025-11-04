@@ -1,34 +1,67 @@
+"use client";
+import { useParams } from "next/navigation";
+import { Form, Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
-import { deleteAssignment } from "./reducer";
-import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
-import { BsGripVertical } from "react-icons/bs";
-import { MdOutlineAssignment } from "react-icons/md";
-import { formatDateTime } from "./FormatDate";
+import { addAssignment, updateAssignment } from "./reducer";
+import type { Assignment } from "../../../Database";
 
-export default function Assignments() {
-  const { assignments } = useSelector((state: RootState) => state.assignmentReducer);
+export default function AssignmentPage() {
+  const { aid } = useParams();
   const dispatch = useDispatch();
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this assignment?")) {
-      dispatch(deleteAssignment(id));
+  const assignments = useSelector(
+    (state: RootState) => state.assignmentReducer.assignments
+  );
+
+  const assignment = assignments.find(a => a.id === aid);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (assignment) {
+      setTitle(assignment.title);
+      setDescription(assignment.description);
+    }
+  }, [assignment]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (assignment) {
+      dispatch(updateAssignment({ ...assignment, title, description }));
+    } else {
+      dispatch(addAssignment({ id: aid || crypto.randomUUID(), title, description }));
     }
   };
 
+  if (!assignment && !aid) return <div>Loading...</div>;
+
   return (
-    <ListGroup>
-      {assignments.map(a => (
-        <ListGroupItem key={a.id} className="d-flex justify-content-between align-items-center">
-          <div>
-            <BsGripVertical className="me-2" /> <MdOutlineAssignment /> {a.title}
-            <div>
-              Due: {formatDateTime(a.dueDate)} | {a.points} pts
-            </div>
-          </div>
-          <Button variant="danger" onClick={() => handleDelete(a.id)}>Delete</Button>
-        </ListGroupItem>
-      ))}
-    </ListGroup>
+    <div className="p-3">
+      <h3>{assignment ? "Edit Assignment" : "New Assignment"}</h3>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="assignmentTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="assignmentDescription">
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={4}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+          />
+        </Form.Group>
+        <Button type="submit">{assignment ? "Update" : "Add"} Assignment</Button>
+      </Form>
+    </div>
   );
 }
