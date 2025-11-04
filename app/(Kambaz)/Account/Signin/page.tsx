@@ -2,12 +2,12 @@
 export const dynamic = 'force-dynamic';
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { setCurrentUser } from "../reducer";
 import { useDispatch } from "react-redux";
 import { useState, ChangeEvent } from "react";
 import * as db from "../../Database";
 import { FormControl, Button } from "react-bootstrap";
+import { useRouter } from "next/navigation"; 
+import { setCurrentUser } from "../reducer";
 
 type Credentials = {
   username: string;
@@ -17,6 +17,7 @@ type Credentials = {
 export default function Signin() {
   const [credentials, setCredentials] = useState<Credentials>({ username: "", password: "" });
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const signin = () => {
     const user = db.users.find(
@@ -24,7 +25,7 @@ export default function Signin() {
     );
     if (!user) return;
     dispatch(setCurrentUser(user));
-    redirect("/Dashboard");
+    router.push("/Dashboard"); 
   };
 
   const handleChange = (field: keyof Credentials, value: string) => {
@@ -53,10 +54,10 @@ export default function Signin() {
           handleChange("password", e.target.value)
         }
       />
-      <Button id="wd-signin-btn" className="w-100" onClick={signin}>
+      <Button id="wd-signin-btn" className="w-100 mb-2" onClick={signin}>
         Sign in
       </Button>
-      <Link id="wd-signup-link" href="/Account/Profile">
+      <Link id="wd-signup-link" href="/Account/Signup">
         Sign up
       </Link>
     </div>
