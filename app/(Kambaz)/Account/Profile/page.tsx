@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic'; 
+
 import { useState, useEffect, ChangeEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
@@ -25,18 +27,21 @@ export default function Profile() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const fetchProfile = () => {
-    if (!currentUser) return router.push("/Account/Signin");
+    if (!currentUser) {
+      router.push("/Account/Signin"); // Client-side navigation
+      return;
+    }
     setProfile(currentUser as UserProfile);
   };
 
   const signout = () => {
     dispatch(setCurrentUser(null));
-    router.push("/Account/Signin");
+    router.push("/Account/Signin"); 
   };
 
   useEffect(() => {
     fetchProfile();
-  }, [currentUser]);
+  }, [currentUser]); 
 
   const handleChange = (field: keyof UserProfile, value: string) => {
     if (!profile) return;
