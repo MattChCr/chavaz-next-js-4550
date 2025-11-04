@@ -1,4 +1,6 @@
-"use client";
+'use client';
+export const dynamic = 'force-dynamic';
+
 import { ReactNode, useState } from "react";
 import CourseNavigation from "./Navigation";
 import { useSelector } from "react-redux";

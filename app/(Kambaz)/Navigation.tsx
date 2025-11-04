@@ -1,4 +1,5 @@
-"use client"
+'use client';
+export const dynamic = 'force-dynamic';
 
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";

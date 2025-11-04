@@ -1,4 +1,5 @@
-"use client";
+'use client';
+export const dynamic = 'force-dynamic';
 
 import { Button, Form } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
