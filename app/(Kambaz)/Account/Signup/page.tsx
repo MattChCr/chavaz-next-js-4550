@@ -4,11 +4,12 @@ import { redirect } from "next/navigation";
 import { setCurrentUser } from "../reducer";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { FormControl, Button } from "react-bootstrap";
+import { FormControl } from "react-bootstrap";
 import * as client from "../client";
+import type { User } from "../client";
 
 export default function Signup() {
-  const [user, setUser] = useState<any>({});
+  const [user, setUser] = useState<Partial<User>>({});
   const dispatch = useDispatch();
   const signup = async () => {
     const currentUser = await client.signup(user);
