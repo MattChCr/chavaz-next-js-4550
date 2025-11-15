@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as client from "./client";
+import type { Todo } from "./client";
 import { FormControl, ListGroup, ListGroupItem } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";
@@ -8,7 +9,7 @@ import { FaPencil } from "react-icons/fa6";
 
 
 export default function WorkingWithArraysAsynchronously() {
-  const [todos, setTodos] = useState<any[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const createNewTodo = async () => {
     const todos = await client.createNewTodo();
     setTodos(todos);
@@ -17,32 +18,38 @@ export default function WorkingWithArraysAsynchronously() {
     const todos = await client.fetchTodos();
     setTodos(todos);
   };
-   const removeTodo = async (todo: any) => {
+   const removeTodo = async (todo: Todo) => {
+    if (!todo.id) return;
     const updatedTodos = await client.removeTodo(todo);
     setTodos(updatedTodos);
   };
 
-   const deleteTodo = async (todo: any) => {
+   const deleteTodo = async (todo: Todo) => {
+    if (!todo.id) return;
     try {
       await client.deleteTodo(todo);
       const newTodos = todos.filter((t) => t.id !== todo.id);
       setTodos(newTodos);
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
-      setErrorMessage(error.response.data.message);
+      const err = error as { response?: { data?: { message?: string } } };
+      setErrorMessage(err.response?.data?.message || "An error occurred");
     }  };
- const editTodo = (todo: any) => {
+ const editTodo = (todo: Todo) => {
+    if (!todo.id) return;
     const updatedTodos = todos.map(
       (t) => t.id === todo.id ? { ...todo, editing: true } : t );
     setTodos(updatedTodos);
   };
-  const [errorMessage, setErrorMessage] = useState(null);
-  const updateTodo = async (todo: any) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const updateTodo = async (todo: Todo) => {
+    if (!todo.id) return;
     try {
       await client.updateTodo(todo);
       setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
-    } catch (error: any) {
-      setErrorMessage(error.response.data.message);
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      setErrorMessage(err.response?.data?.message || "An error occurred");
     }
   };
 
@@ -50,8 +57,8 @@ export default function WorkingWithArraysAsynchronously() {
 
   const postNewTodo = async () => {
     const newTodo = await client.postNewTodo({
-        title: "New Posted Todo", completed: false,
-        id: ""
+        title: "New Posted Todo", 
+        completed: false,
     });
     setTodos([...todos, newTodo])}; 
 

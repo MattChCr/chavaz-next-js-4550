@@ -1,7 +1,7 @@
 import axios from "axios";
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 
-type Todo = {
+export type Todo = {
   id?: string;
   title?: string;
   completed?: boolean;
