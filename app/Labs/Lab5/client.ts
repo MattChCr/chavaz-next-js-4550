@@ -2,9 +2,10 @@ import axios from "axios";
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 
 type Todo = {
-  id: string;
+  id?: string;
   title?: string;
   completed?: boolean;
+  editing?: boolean;
   [key: string]: unknown;
 };
 export const fetchWelcomeMessage = async () => {

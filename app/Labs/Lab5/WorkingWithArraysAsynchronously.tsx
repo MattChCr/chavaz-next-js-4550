@@ -49,7 +49,10 @@ export default function WorkingWithArraysAsynchronously() {
 
 
   const postNewTodo = async () => {
-    const newTodo = await client.postNewTodo({ title: "New Posted Todo", completed: false, });
+    const newTodo = await client.postNewTodo({
+        title: "New Posted Todo", completed: false,
+        id: ""
+    });
     setTodos([...todos, newTodo])}; 
 
   useEffect(() => {
