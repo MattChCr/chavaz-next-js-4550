@@ -1,6 +1,8 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
+import * as client from "../client";
+
 import { useState, useEffect, ChangeEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
@@ -22,6 +24,11 @@ export default function Profile() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+   const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
@@ -32,7 +39,9 @@ export default function Profile() {
     setProfile(currentUser as UserProfile);
   }, [currentUser]);
 
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
+
     dispatch(setCurrentUser(null));
     router.push("/Account/Signin"); // client-side redirect
   };
@@ -103,6 +112,8 @@ export default function Profile() {
         <option value="FACULTY">Faculty</option>
         <option value="STUDENT">Student</option>
       </select>
+      <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
+
       <Button onClick={signout} className="w-100 mb-2">
         Sign out
       </Button>
