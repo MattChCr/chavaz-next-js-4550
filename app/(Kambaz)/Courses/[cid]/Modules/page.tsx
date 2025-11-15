@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic';
 import * as client from "../../client";
 
-import { useState, useEffect  } from "react";
+import { useState, useEffect, useCallback  } from "react";
 import { useParams } from "next/navigation";
 import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
@@ -10,13 +10,14 @@ import { setModules, addModule, editModule, updateModule, deleteModule } from ".
 import ModulesControls from "./ModulesControls";
 import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
-import type { Module } from "../../../Database";
+import type { Module, Lesson } from "../../../Database";
 import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../store";
 
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
-  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
   const dispatch = useDispatch();
   
    const onCreateModuleForCourse = async () => {
@@ -26,14 +27,15 @@ export default function Modules() {
     dispatch(setModules([...modules, module]));
   };
 
-  const fetchModules = async () => {
-    const modules = await client.findModulesForCourse(cid as string);
+  const fetchModules = useCallback(async () => {
+    if (!cid || Array.isArray(cid)) return;
+    const modules = await client.findModulesForCourse(cid);
     dispatch(setModules(modules));
-  };
+  }, [cid, dispatch]);
   
   useEffect(() => {
     fetchModules();
-  }, [cid]);
+  }, [fetchModules]);
 
 
   const handleDeleteModule = (moduleId: string) => {
@@ -89,7 +91,7 @@ export default function Modules() {
             </div>
             {module.lessons && module.lessons.length > 0 && (
               <ListGroup className="wd-lessons rounded-0">
-                {module.lessons.map((lesson: any, idx: number) => (
+                {module.lessons.map((lesson: Lesson, idx: number) => (
                   <ListGroupItem
                     key={lesson.id ?? `${module._id}-lesson-${idx}`}
                     className="wd-lesson p-3 ps-1 d-flex align-items-center justify-content-between"

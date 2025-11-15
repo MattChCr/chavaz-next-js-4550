@@ -43,7 +43,11 @@ export const createModuleForCourse = async (courseId: string, module: any) => {
 };
 
 export const updateModule = async (module: any) => {
-  const { data } = await axios.put(`${MODULES_API}/${module._id}`, module);
+  const { course, _id } = module;
+  const { data } = await axios.put(
+    `${COURSES_API}/${course}/modules/${_id}`,
+    module
+  );
   return data;
 };
 
