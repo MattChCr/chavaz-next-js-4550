@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import * as client from "../client";
+import type { User } from "../client";
 
 import { useState, useEffect, ChangeEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,7 +26,15 @@ export default function Profile() {
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
    const updateProfile = async () => {
-    const updatedProfile = await client.updateUser(profile);
+    if (!profile || !currentUser) return;
+    const currentUserTyped = currentUser as User;
+    if (!currentUserTyped._id) return;
+    const userToUpdate: User & { _id: string } = {
+      ...currentUserTyped,
+      ...profile,
+      _id: currentUserTyped._id,
+    };
+    const updatedProfile = await client.updateUser(userToUpdate);
     dispatch(setCurrentUser(updatedProfile));
   };
 
