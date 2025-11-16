@@ -124,6 +124,7 @@ export default function Dashboard() {
         }
       />
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+      <div> courses</div>
       <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
