@@ -28,7 +28,7 @@ export default function AssignmentsControls() {
         Group
       </Button>
 
-      <Link href={`/Courses/${cid}/Assignments/A303`}>
+      <Link href={`/Courses/${cid}/Assignments/new`}>
         <Button variant="danger" size="lg" className="me-1" id="wd-add-assignment-btn">
           <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Assignment

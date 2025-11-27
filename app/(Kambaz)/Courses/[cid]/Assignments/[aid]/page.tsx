@@ -1,14 +1,13 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
+import * as client from "../../../client";
 import { useParams, useRouter } from "next/navigation";
 import { Form, Button } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { addAssignment, updateAssignment } from "../reducer";
-import { v4 as uuidv4 } from "uuid";
-import { Assignment } from "@/app/(Kambaz)/Database";
+import { addAssignment, updateAssignment, setAssignments } from "../reducer";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -16,19 +15,47 @@ export default function AssignmentEditor() {
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignmentReducer);
 
+  const isNewAssignment = aid === "new";
   const existingAssignment = assignments.find(a => a.id === aid);
 
   const [title, setTitle] = useState(existingAssignment?.title ?? "");
   const [description, setDescription] = useState(existingAssignment?.description ?? "");
-  const [points, setPoints] = useState(existingAssignment?.points ?? 0);
+  const [points, setPoints] = useState(existingAssignment?.points ?? 100);
   const [assignTo, setAssignTo] = useState(existingAssignment?.assignTo ?? "Everyone");
   const [dueDate, setDueDate] = useState(existingAssignment?.dueDate ?? "");
   const [availableFrom, setAvailableFrom] = useState(existingAssignment?.availableFrom ?? "");
   const [availableUntil, setAvailableUntil] = useState(existingAssignment?.availableUntil ?? "");
 
-  const saveAssignment = () => {
-    const assignment: Assignment = {
-      id: existingAssignment?.id ?? uuidv4(),
+  // Fetch assignments if not loaded yet (for direct navigation to edit page)
+  const fetchAssignments = useCallback(async () => {
+    if (!cid || Array.isArray(cid)) return;
+    if (assignments.length === 0) {
+      const fetchedAssignments = await client.findAssignmentsForCourse(cid);
+      dispatch(setAssignments(fetchedAssignments));
+    }
+  }, [cid, dispatch, assignments.length]);
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [fetchAssignments]);
+
+  // Update form when assignment is loaded
+  useEffect(() => {
+    if (existingAssignment && !isNewAssignment) {
+      setTitle(existingAssignment.title ?? "");
+      setDescription(existingAssignment.description ?? "");
+      setPoints(existingAssignment.points ?? 100);
+      setAssignTo(existingAssignment.assignTo ?? "Everyone");
+      setDueDate(existingAssignment.dueDate ?? "");
+      setAvailableFrom(existingAssignment.availableFrom ?? "");
+      setAvailableUntil(existingAssignment.availableUntil ?? "");
+    }
+  }, [existingAssignment, isNewAssignment]);
+
+  const saveAssignment = async () => {
+    if (!cid || Array.isArray(cid)) return;
+
+    const assignmentData = {
       title,
       description,
       points,
@@ -36,13 +63,18 @@ export default function AssignmentEditor() {
       dueDate,
       availableFrom,
       availableUntil,
-      course: ""
+      course: cid,
     };
 
-    if (existingAssignment) {
-      dispatch(updateAssignment(assignment));
+    if (isNewAssignment) {
+      const createdAssignment = await client.createAssignmentForCourse(cid, assignmentData);
+      dispatch(setAssignments([...assignments, createdAssignment]));
     } else {
-      dispatch(addAssignment(assignment));
+      const updatedAssignment = await client.updateAssignment({
+        ...assignmentData,
+        id: aid as string,
+      });
+      dispatch(updateAssignment(updatedAssignment));
     }
 
     router.push(`/Courses/${cid}/Assignments`);

@@ -1,15 +1,17 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
+import * as client from "../../client";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect, useCallback } from "react";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
 import { MdEditDocument } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
-import { deleteAssignment } from "./reducer";
+import { setAssignments, deleteAssignment } from "./reducer";
 import AssignmentsControls from "./AssignmentsControls";
 import { formatDateTime } from "./FormatDate";
 
@@ -17,15 +19,24 @@ export default function Assignments() {
   const { cid } = useParams();
   const dispatch = useDispatch();
 
-  const assignments = useSelector(
-    (state: RootState) => state.assignmentReducer.assignments
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentReducer
   );
 
-  // Filter assignments for the current course
-  const courseAssignments = assignments.filter(a => a.course === cid);
+  const fetchAssignments = useCallback(async () => {
+    if (!cid || Array.isArray(cid)) return;
+    const assignments = await client.findAssignmentsForCourse(cid);
+    dispatch(setAssignments(assignments));
+  }, [cid, dispatch]);
 
-  const handleDelete = (id: string) => {
+  useEffect(() => {
+    fetchAssignments();
+  }, [fetchAssignments]);
+
+  const handleDelete = async (id: string) => {
+    if (!cid || Array.isArray(cid)) return;
     if (window.confirm("Are you sure you want to delete this assignment?")) {
+      await client.deleteAssignment(cid, id);
       dispatch(deleteAssignment(id));
     }
   };
@@ -42,12 +53,12 @@ export default function Assignments() {
           <span className="fw-bold">ASSIGNMENTS</span>
         </ListGroupItem>
 
-        {courseAssignments.length === 0 ? (
+        {assignments.length === 0 ? (
           <ListGroupItem className="p-3 text-muted">
             No assignments found for this course.
           </ListGroupItem>
         ) : (
-          courseAssignments.map((assignment) => (
+          assignments.map((assignment) => (
             <ListGroupItem
               key={assignment.id}
               className="wd-assignment-list-item p-3 ps-1 d-flex align-items-center justify-content-between"
