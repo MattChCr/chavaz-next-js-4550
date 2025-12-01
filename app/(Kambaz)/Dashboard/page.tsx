@@ -41,7 +41,7 @@ export default function Dashboard() {
     credits: 0,
     startDate: "",
     endDate: "",
-    image: "/images/reactjs.jpg",
+    image: "/Images/reactjs.jpg",
     description: "",
   });
 
@@ -54,7 +54,7 @@ export default function Dashboard() {
       credits: 0,
       startDate: "",
       endDate: "",
-      image: "/images/reactjs.jpg",
+      image: "/Images/reactjs.jpg",
       description: "",
     });
   };
@@ -78,21 +78,26 @@ export default function Dashboard() {
   };
 
   const onAddNewCourse = async () => {
-    const newCourse = await client.createCourse(course);
-    dispatch(setCourses([ ...courses, newCourse ]));
+    await client.createCourse(course);
+    // Re-fetch courses from backend to ensure persistence
+    fetchCourses();
+    fetchAllCourses();
+    resetForm();
   };
 
   const onDeleteCourse = async (courseId: string) => {
-    const status = await client.deleteCourse(courseId);
-    dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
+    await client.deleteCourse(courseId);
+    // Re-fetch courses from backend to ensure persistence
+    fetchCourses();
+    fetchAllCourses();
   };
 
   const onUpdateCourse = async () => {
     await client.updateCourse(course);
-    dispatch(setCourses(courses.map((c) => {
-        if (c._id === course._id) { return course; }
-        else { return c; }
-    })));
+    // Re-fetch courses from backend to ensure persistence
+    fetchCourses();
+    fetchAllCourses();
+    resetForm();
   };
 
   const handleEnroll = async (courseId: string) => {
@@ -192,7 +197,7 @@ export default function Dashboard() {
                   className="wd-dashboard-course-link text-decoration-none text-dark"
                 >
                   <CardImg
-                    src={c.image || "/images/reactjs.jpg"}
+                    src={c.image || "/Images/reactjs.jpg"}
                     variant="top"
                     width="100%"
                     height={160}

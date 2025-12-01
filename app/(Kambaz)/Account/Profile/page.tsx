@@ -34,8 +34,14 @@ export default function Profile() {
       ...profile,
       _id: currentUserTyped._id,
     };
-    const updatedProfile = await client.updateUser(userToUpdate);
-    dispatch(setCurrentUser(updatedProfile));
+    try {
+      const updatedProfile = await client.updateUser(userToUpdate);
+      dispatch(setCurrentUser(updatedProfile));
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
+    }
   };
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
