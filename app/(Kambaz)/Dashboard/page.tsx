@@ -19,6 +19,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse, setCourses} from "../Courses/reducer";
 import { RootState } from "../store";
+import { enroll, unenroll, setEnrollments } from "./enrollmentsReducer";
 
 export default function Dashboard() {
   const courses = useSelector<RootState, Course[]>(
@@ -26,7 +27,11 @@ export default function Dashboard() {
   );
 
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const dispatch = useDispatch();
+
+  const [showAllCourses, setShowAllCourses] = useState(false);
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
 
   const [course, setCourse] = useState<Course>({
     _id: "",
@@ -62,12 +67,22 @@ export default function Dashboard() {
       console.error(error);
     }
   };
-   const onAddNewCourse = async () => {
+
+  const fetchAllCourses = async () => {
+    try {
+      const courses = await client.fetchAllCourses();
+      setAllCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onAddNewCourse = async () => {
     const newCourse = await client.createCourse(course);
     dispatch(setCourses([ ...courses, newCourse ]));
   };
 
-    const onDeleteCourse = async (courseId: string) => {
+  const onDeleteCourse = async (courseId: string) => {
     const status = await client.deleteCourse(courseId);
     dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
   };
@@ -77,16 +92,56 @@ export default function Dashboard() {
     dispatch(setCourses(courses.map((c) => {
         if (c._id === course._id) { return course; }
         else { return c; }
-    })));};
+    })));
+  };
 
+  const handleEnroll = async (courseId: string) => {
+    try {
+      await client.enrollInCourse(courseId);
+      dispatch(enroll({ user: currentUser?._id, course: courseId }));
+      // Refresh enrolled courses
+      fetchCourses();
+    } catch (error) {
+      console.error("Error enrolling:", error);
+    }
+  };
+
+  const handleUnenroll = async (courseId: string) => {
+    try {
+      await client.unenrollFromCourse(courseId);
+      dispatch(unenroll({ user: currentUser?._id, course: courseId }));
+      // Refresh enrolled courses
+      fetchCourses();
+    } catch (error) {
+      console.error("Error unenrolling:", error);
+    }
+  };
+
+  const isEnrolled = (courseId: string) => {
+    return enrollments.some(
+      (e) => e.user === currentUser?._id && e.course === courseId
+    );
+  };
 
   useEffect(() => {
     fetchCourses();
+    fetchAllCourses();
   }, [currentUser]);
+
+  // Determine which courses to display
+  const displayedCourses = showAllCourses ? allCourses : courses;
 
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
+      <hr />
+      <Button
+        variant={showAllCourses ? "primary" : "outline-primary"}
+        onClick={() => setShowAllCourses(!showAllCourses)}
+        className="mb-3"
+      >
+        {showAllCourses ? "Show My Courses" : "Show All Courses (Enrollments)"}
+      </Button>
       <hr />
       <h5>
         {course._id ? "Edit Course" : "New Course"}
@@ -123,12 +178,13 @@ export default function Dashboard() {
           setCourse({ ...course, description: e.target.value })
         }
       />
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
-      <div> courses</div>
+      <h2 id="wd-dashboard-published">
+        {showAllCourses ? "All Courses" : "My Courses"} ({displayedCourses.length})
+      </h2>
       <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
-          {courses.map((c) => (
+          {displayedCourses.map((c) => (
             <Col key={c._id} className="wd-dashboard-course" style={{ width: "300px" }}>
               <Card>
                 <Link
@@ -151,27 +207,56 @@ export default function Dashboard() {
                     >
                       {c.description}
                     </CardText>
-                    <Button variant="primary"> Go </Button>
-                    <button
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setCourse(c);
-                      }}
-                      className="btn btn-warning me-2 float-end"
-                      id="wd-edit-course-click"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={(event) => {
-                        event.preventDefault();
-                        onDeleteCourse(course._id);
-                      }}
-                      className="btn btn-danger float-end"
-                      id="wd-delete-course-click"
-                    >
-                      Delete
-                    </button>
+                    {!showAllCourses && (
+                      <>
+                        <Button variant="primary"> Go </Button>
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setCourse(c);
+                          }}
+                          className="btn btn-warning me-2 float-end"
+                          id="wd-edit-course-click"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            onDeleteCourse(c._id);
+                          }}
+                          className="btn btn-danger float-end"
+                          id="wd-delete-course-click"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                    {showAllCourses && (
+                      <div className="d-flex gap-2">
+                        {isEnrolled(c._id) ? (
+                          <Button
+                            variant="danger"
+                            onClick={(event) => {
+                              event.preventDefault();
+                              handleUnenroll(c._id);
+                            }}
+                          >
+                            Unenroll
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="success"
+                            onClick={(event) => {
+                              event.preventDefault();
+                              handleEnroll(c._id);
+                            }}
+                          >
+                            Enroll
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </CardBody>
                 </Link>
               </Card>

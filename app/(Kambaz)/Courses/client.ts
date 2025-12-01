@@ -93,3 +93,14 @@ export const deleteAssignment = async (courseId: string, assignmentId: string) =
   );
   return data;
 };
+
+// Enrollments
+export const enrollInCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses/${courseId}`);
+  return data;
+};
+
+export const unenrollFromCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.delete(`${USERS_API}/current/courses/${courseId}`);
+  return data;
+};
