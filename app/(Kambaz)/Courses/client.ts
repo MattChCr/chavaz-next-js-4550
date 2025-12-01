@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Course, Module, Assignment } from "../Database";
+import type { Course, Module, Assignment, User } from "../Database";
 
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
@@ -102,5 +102,26 @@ export const enrollInCourse = async (courseId: string) => {
 
 export const unenrollFromCourse = async (courseId: string) => {
   const { data } = await axiosWithCredentials.delete(`${USERS_API}/current/courses/${courseId}`);
+  return data;
+};
+
+// Users / People
+export const findUsersForCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/users`);
+  return data;
+};
+
+export const createUser = async (user: Partial<User>) => {
+  const { data } = await axiosWithCredentials.post(USERS_API, user);
+  return data;
+};
+
+export const updateUser = async (userId: string, user: Partial<User>) => {
+  const { data } = await axiosWithCredentials.put(`${USERS_API}/${userId}`, user);
+  return data;
+};
+
+export const deleteUser = async (userId: string) => {
+  const { data } = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
   return data;
 };
