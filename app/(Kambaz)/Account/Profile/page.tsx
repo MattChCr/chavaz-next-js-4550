@@ -25,22 +25,12 @@ export default function Profile() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-   const updateProfile = async () => {
+  
+  const updateProfile = async () => {
     if (!profile || !currentUser) return;
-    const currentUserTyped = currentUser as User;
-    const userId = currentUserTyped._id || currentUserTyped.id;
-    if (!userId) return;
-    const userToUpdate: User & { _id: string } = {
-      ...currentUserTyped,
-      ...profile,
-      _id: userId,
-    };
-    try {
-      const updatedProfile = await client.updateUser(userToUpdate);
-      dispatch(setCurrentUser(updatedProfile));
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+    const userToUpdate = { ...currentUser, ...profile };
+    const updatedProfile = await client.updateUser(userToUpdate as User & { _id: string });
+    dispatch(setCurrentUser(updatedProfile));
   };
 
   const [profile, setProfile] = useState<UserProfile | null>(null);

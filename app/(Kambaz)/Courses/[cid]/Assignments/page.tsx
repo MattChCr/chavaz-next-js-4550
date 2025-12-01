@@ -14,11 +14,6 @@ import { RootState } from "../../../store";
 import { setAssignments, deleteAssignment } from "./reducer";
 import AssignmentsControls from "./AssignmentsControls";
 import { formatDateTime } from "./FormatDate";
-import type { Assignment } from "../../../Database";
-
-// Helper to get assignment ID (backend may return _id or id)
-const getAssignmentId = (assignment: Assignment & { _id?: string }) => 
-  assignment.id || assignment._id || "";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -63,48 +58,45 @@ export default function Assignments() {
             No assignments found for this course.
           </ListGroupItem>
         ) : (
-          assignments.map((assignment) => {
-            const assignmentId = getAssignmentId(assignment);
-            return (
-              <ListGroupItem
-                key={assignmentId}
-                className="wd-assignment-list-item p-3 ps-1 d-flex align-items-center justify-content-between"
-              >
-                <div className="d-flex align-items-center">
-                  <BsGripVertical className="me-2 fs-3 text-muted" />
-                  <MdEditDocument className="me-3 fs-3 text-success" />
-                  <div>
-                    <Link
-                      href={`/Courses/${cid}/Assignments/${assignmentId}`}
-                      className="wd-assignment-link fw-bold text-decoration-none"
-                    >
-                      {assignment.title}
-                    </Link>
-                    <div className="text-muted small">
-                      <span className="text-danger">Multiple Modules</span>
-                      {assignment.availableFrom && (
-                        <> | <strong>Available:</strong> {formatDateTime(assignment.availableFrom)}</>
-                      )}
-                      {assignment.dueDate && (
-                        <> | <strong>Due:</strong> {formatDateTime(assignment.dueDate)}</>
-                      )}
-                      {assignment.points !== undefined && (
-                        <> | {assignment.points} pts</>
-                      )}
-                    </div>
+          assignments.map((assignment) => (
+            <ListGroupItem
+              key={assignment.id}
+              className="wd-assignment-list-item p-3 ps-1 d-flex align-items-center justify-content-between"
+            >
+              <div className="d-flex align-items-center">
+                <BsGripVertical className="me-2 fs-3 text-muted" />
+                <MdEditDocument className="me-3 fs-3 text-success" />
+                <div>
+                  <Link
+                    href={`/Courses/${cid}/Assignments/${assignment.id}`}
+                    className="wd-assignment-link fw-bold text-decoration-none"
+                  >
+                    {assignment.title}
+                  </Link>
+                  <div className="text-muted small">
+                    <span className="text-danger">Multiple Modules</span>
+                    {assignment.availableFrom && (
+                      <> | <strong>Available:</strong> {formatDateTime(assignment.availableFrom)}</>
+                    )}
+                    {assignment.dueDate && (
+                      <> | <strong>Due:</strong> {formatDateTime(assignment.dueDate)}</>
+                    )}
+                    {assignment.points !== undefined && (
+                      <> | {assignment.points} pts</>
+                    )}
                   </div>
                 </div>
-                <div className="d-flex align-items-center gap-2">
-                  <FaTrash
-                    className="text-danger cursor-pointer"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDelete(assignmentId)}
-                    title="Delete assignment"
-                  />
-                </div>
-              </ListGroupItem>
-            );
-          })
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <FaTrash
+                  className="text-danger cursor-pointer"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleDelete(assignment.id)}
+                  title="Delete assignment"
+                />
+              </div>
+            </ListGroupItem>
+          ))
         )}
       </ListGroup>
     </div>

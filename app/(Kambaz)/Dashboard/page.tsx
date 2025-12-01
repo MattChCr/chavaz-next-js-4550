@@ -27,6 +27,7 @@ export default function Dashboard() {
   );
 
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const dispatch = useDispatch();
 
   const [showAllCourses, setShowAllCourses] = useState(false);
@@ -122,8 +123,9 @@ export default function Dashboard() {
   };
 
   const isEnrolled = (courseId: string) => {
-    // Check if course is in the user's enrolled courses (fetched from backend)
-    return courses.some((c) => c._id === courseId);
+    return enrollments.some(
+      (e) => e.user === currentUser?._id && e.course === courseId
+    );
   };
 
   useEffect(() => {
