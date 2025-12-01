@@ -19,7 +19,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse, setCourses} from "../Courses/reducer";
 import { RootState } from "../store";
-import { enroll, unenroll, setEnrollments } from "./enrollmentsReducer";
+import { enroll, unenroll } from "./enrollmentsReducer";
 
 export default function Dashboard() {
   const courses = useSelector<RootState, Course[]>(
@@ -27,7 +27,6 @@ export default function Dashboard() {
   );
 
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const dispatch = useDispatch();
 
   const [showAllCourses, setShowAllCourses] = useState(false);
@@ -123,9 +122,8 @@ export default function Dashboard() {
   };
 
   const isEnrolled = (courseId: string) => {
-    return enrollments.some(
-      (e) => e.user === currentUser?._id && e.course === courseId
-    );
+    // Check if course is in the user's enrolled courses (fetched from backend)
+    return courses.some((c) => c._id === courseId);
   };
 
   useEffect(() => {
