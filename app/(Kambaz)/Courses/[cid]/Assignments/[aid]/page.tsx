@@ -7,7 +7,11 @@ import { Form, Button } from "react-bootstrap";
 import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { addAssignment, updateAssignment, setAssignments } from "../reducer";
+import { updateAssignment, setAssignments } from "../reducer";
+import type { Assignment } from "../../../../Database";
+
+// Extended type to handle backend returning _id instead of id
+type AssignmentWithId = Assignment & { _id?: string };
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -17,7 +21,7 @@ export default function AssignmentEditor() {
 
   const isNewAssignment = aid === "new";
   // Check both id and _id since backend might use either
-  const existingAssignment = assignments.find(a => a.id === aid || (a as any)._id === aid);
+  const existingAssignment = assignments.find(a => a.id === aid || (a as AssignmentWithId)._id === aid);
 
   const [title, setTitle] = useState(existingAssignment?.title ?? "");
   const [description, setDescription] = useState(existingAssignment?.description ?? "");
@@ -72,7 +76,7 @@ export default function AssignmentEditor() {
       dispatch(setAssignments([...assignments, createdAssignment]));
     } else {
       // Use existing assignment's id (could be id or _id from backend)
-      const assignmentId = existingAssignment?.id || (existingAssignment as any)?._id || aid;
+      const assignmentId = existingAssignment?.id || (existingAssignment as AssignmentWithId)?._id || aid;
       const updatedAssignment = await client.updateAssignment({
         ...assignmentData,
         id: assignmentId as string,
