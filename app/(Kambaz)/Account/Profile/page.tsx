@@ -26,13 +26,21 @@ export default function Profile() {
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
    const updateProfile = async () => {
-    if (!profile || !currentUser) return;
+    if (!profile || !currentUser) {
+      console.log("No profile or currentUser");
+      return;
+    }
     const currentUserTyped = currentUser as User;
-    if (!currentUserTyped._id) return;
+    const userId = currentUserTyped._id || currentUserTyped.id;
+    if (!userId) {
+      console.log("No user ID found", currentUserTyped);
+      alert("Error: No user ID found");
+      return;
+    }
     const userToUpdate: User & { _id: string } = {
       ...currentUserTyped,
       ...profile,
-      _id: currentUserTyped._id,
+      _id: userId,
     };
     try {
       const updatedProfile = await client.updateUser(userToUpdate);
