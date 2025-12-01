@@ -16,7 +16,8 @@ export default function AssignmentEditor() {
   const { assignments } = useSelector((state: RootState) => state.assignmentReducer);
 
   const isNewAssignment = aid === "new";
-  const existingAssignment = assignments.find(a => a.id === aid);
+  // Check both id and _id since backend might use either
+  const existingAssignment = assignments.find(a => a.id === aid || (a as any)._id === aid);
 
   const [title, setTitle] = useState(existingAssignment?.title ?? "");
   const [description, setDescription] = useState(existingAssignment?.description ?? "");
@@ -70,9 +71,11 @@ export default function AssignmentEditor() {
       const createdAssignment = await client.createAssignmentForCourse(cid, assignmentData);
       dispatch(setAssignments([...assignments, createdAssignment]));
     } else {
+      // Use existing assignment's id (could be id or _id from backend)
+      const assignmentId = existingAssignment?.id || (existingAssignment as any)?._id || aid;
       const updatedAssignment = await client.updateAssignment({
         ...assignmentData,
-        id: aid as string,
+        id: assignmentId as string,
       });
       dispatch(updateAssignment(updatedAssignment));
     }

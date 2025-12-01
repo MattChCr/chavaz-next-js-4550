@@ -39,16 +39,30 @@ export default function Modules() {
   }, [fetchModules]);
 
 
-  const handleDeleteModule = (moduleId: string) => {
-    dispatch(deleteModule(moduleId));
+  const handleDeleteModule = async (moduleId: string) => {
+    if (!cid || Array.isArray(cid)) return;
+    try {
+      await client.deleteModule(cid, moduleId);
+      dispatch(deleteModule(moduleId));
+    } catch (error) {
+      console.error("Error deleting module:", error);
+    }
   };
 
   const handleEditModule = (moduleId: string) => {
     dispatch(editModule(moduleId));
   };
 
-  const handleUpdateModule = (updatedModule: Module) => {
+  const handleUpdateModule = async (updatedModule: Module) => {
     dispatch(updateModule(updatedModule));
+    // Only save to backend when done editing (pressing Enter)
+    if (!updatedModule.editing) {
+      try {
+        await client.updateModule(updatedModule);
+      } catch (error) {
+        console.error("Error updating module:", error);
+      }
+    }
   };
 
   return (

@@ -61,6 +61,13 @@ export const updateModule = async (module: Module) => {
   return data;
 };
 
+export const deleteModule = async (courseId: string, moduleId: string) => {
+  const { data } = await axiosWithCredentials.delete(
+    `${COURSES_API}/${courseId}/modules/${moduleId}`
+  );
+  return data;
+};
+
 // Assignments
 export const findAssignmentsForCourse = async (courseId: string) => {
   const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/assignments`);
