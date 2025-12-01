@@ -26,17 +26,10 @@ export default function Profile() {
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
    const updateProfile = async () => {
-    if (!profile || !currentUser) {
-      console.log("No profile or currentUser");
-      return;
-    }
+    if (!profile || !currentUser) return;
     const currentUserTyped = currentUser as User;
     const userId = currentUserTyped._id || currentUserTyped.id;
-    if (!userId) {
-      console.log("No user ID found", currentUserTyped);
-      alert("Error: No user ID found");
-      return;
-    }
+    if (!userId) return;
     const userToUpdate: User & { _id: string } = {
       ...currentUserTyped,
       ...profile,
@@ -45,10 +38,8 @@ export default function Profile() {
     try {
       const updatedProfile = await client.updateUser(userToUpdate);
       dispatch(setCurrentUser(updatedProfile));
-      alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile. Please try again.");
     }
   };
 
