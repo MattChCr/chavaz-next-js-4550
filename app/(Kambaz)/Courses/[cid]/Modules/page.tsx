@@ -39,7 +39,9 @@ export default function Modules() {
   }, [fetchModules]);
 
 
-  const handleDeleteModule = (moduleId: string) => {
+  const handleDeleteModule = async (moduleId: string) => {
+    if (!cid || Array.isArray(cid)) return;
+    await client.deleteModule(cid, moduleId);
     dispatch(deleteModule(moduleId));
   };
 
@@ -47,7 +49,8 @@ export default function Modules() {
     dispatch(editModule(moduleId));
   };
 
-  const handleUpdateModule = (updatedModule: Module) => {
+  const handleUpdateModule = async (updatedModule: Module) => {
+    await client.updateModule(updatedModule);
     dispatch(updateModule(updatedModule));
   };
 

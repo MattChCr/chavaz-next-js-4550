@@ -16,7 +16,7 @@ export default function AssignmentEditor() {
   const { assignments } = useSelector((state: RootState) => state.assignmentReducer);
 
   const isNewAssignment = aid === "new";
-  const existingAssignment = assignments.find(a => a.id === aid);
+  const existingAssignment = assignments.find(a => a._id === aid);
 
   const [title, setTitle] = useState(existingAssignment?.title ?? "");
   const [description, setDescription] = useState(existingAssignment?.description ?? "");
@@ -72,7 +72,7 @@ export default function AssignmentEditor() {
     } else {
       const updatedAssignment = await client.updateAssignment({
         ...assignmentData,
-        id: aid as string,
+        _id: aid as string,
       });
       dispatch(updateAssignment(updatedAssignment));
     }

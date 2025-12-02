@@ -14,16 +14,16 @@ const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
-    addAssignment: (state, action: PayloadAction<Omit<Assignment, "id">>) => {
-      const newAssignment: Assignment = { ...action.payload, id: uuidv4() };
+    addAssignment: (state, action: PayloadAction<Omit<Assignment, "_id">>) => {
+      const newAssignment: Assignment = { ...action.payload, _id: uuidv4() };
       state.assignments.push(newAssignment);
     },
     deleteAssignment: (state, action: PayloadAction<string>) => {
-      state.assignments = state.assignments.filter(a => a.id !== action.payload);
+      state.assignments = state.assignments.filter(a => a._id !== action.payload);
     },
     updateAssignment: (state, action: PayloadAction<Assignment>) => {
       state.assignments = state.assignments.map(a =>
-        a.id === action.payload.id ? action.payload : a
+        a._id === action.payload._id ? action.payload : a
       );
     },
     setAssignments: (state, action: PayloadAction<Assignment[]>) => {

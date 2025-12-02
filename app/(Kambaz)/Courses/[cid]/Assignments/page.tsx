@@ -60,7 +60,7 @@ export default function Assignments() {
         ) : (
           assignments.map((assignment) => (
             <ListGroupItem
-              key={assignment.id}
+              key={assignment._id}
               className="wd-assignment-list-item p-3 ps-1 d-flex align-items-center justify-content-between"
             >
               <div className="d-flex align-items-center">
@@ -68,7 +68,7 @@ export default function Assignments() {
                 <MdEditDocument className="me-3 fs-3 text-success" />
                 <div>
                   <Link
-                    href={`/Courses/${cid}/Assignments/${assignment.id}`}
+                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
                     className="wd-assignment-link fw-bold text-decoration-none"
                   >
                     {assignment.title}
@@ -91,7 +91,7 @@ export default function Assignments() {
                 <FaTrash
                   className="text-danger cursor-pointer"
                   style={{ cursor: "pointer" }}
-                  onClick={() => handleDelete(assignment.id)}
+                  onClick={() => handleDelete(assignment._id)}
                   title="Delete assignment"
                 />
               </div>

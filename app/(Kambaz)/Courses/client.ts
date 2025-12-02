@@ -76,7 +76,7 @@ export const findAssignmentsForCourse = async (courseId: string) => {
 
 export const createAssignmentForCourse = async (
   courseId: string,
-  assignment: Omit<Assignment, "id">
+  assignment: Omit<Assignment, "_id">
 ) => {
   const response = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/assignments`,
@@ -86,9 +86,9 @@ export const createAssignmentForCourse = async (
 };
 
 export const updateAssignment = async (assignment: Assignment) => {
-  const { course, id } = assignment;
+  const { course, _id } = assignment;
   const { data } = await axiosWithCredentials.put(
-    `${COURSES_API}/${course}/assignments/${id}`,
+    `${COURSES_API}/${course}/assignments/${_id}`,
     assignment
   );
   return data;

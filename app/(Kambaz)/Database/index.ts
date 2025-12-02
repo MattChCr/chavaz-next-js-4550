@@ -34,7 +34,7 @@ export type Module = {
 };
 
 export type Assignment = {
-  id: string;
+  _id: string;
   title: string;
   course: string;
   description: string;
