@@ -17,6 +17,7 @@ import type { RootState } from "../../../store";
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
+  const [editingName, setEditingName] = useState("");
   const { modules } = useSelector((state: RootState) => state.modulesReducer);
   const dispatch = useDispatch();
   
@@ -46,6 +47,10 @@ export default function Modules() {
   };
 
   const handleEditModule = (moduleId: string) => {
+    const moduleToEdit = modules.find(m => m._id === moduleId);
+    if (moduleToEdit) {
+      setEditingName(moduleToEdit.name);
+    }
     dispatch(editModule(moduleId));
   };
 
@@ -75,15 +80,14 @@ export default function Modules() {
                 {module.editing && (
                   <FormControl
                     className="w-50 d-inline-block"
-                    defaultValue={module.name}
-                    onChange={(e) =>
-                      handleUpdateModule({ ...module, name: e.target.value })
-                    }
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        handleUpdateModule({ ...module, editing: false });
+                        handleUpdateModule({ ...module, name: editingName, editing: false });
                       }
                     }}
+                    autoFocus
                   />
                 )}
               </div>

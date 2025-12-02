@@ -124,10 +124,10 @@ export default function AssignmentEditor() {
         </Form.Group>
 
         <div className="d-flex justify-content-end gap-2">
-          <Button variant="secondary" onClick={() => router.push(`/Courses/${cid}/Assignments`)}>
+          <Button type="button" variant="secondary" onClick={() => router.push(`/Courses/${cid}/Assignments`)}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={saveAssignment}>
+          <Button type="button" variant="primary" onClick={saveAssignment}>
             Save
           </Button>
         </div>
