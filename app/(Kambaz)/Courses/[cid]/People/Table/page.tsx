@@ -4,18 +4,19 @@ export const dynamic = "force-dynamic";
 import React, { useState, useEffect, useCallback } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { FaUserCircle, FaTrash, FaEdit, FaPlus } from "react-icons/fa";
-import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import * as client from "../../../../Courses/client";
 import type { User } from "../../../../Database";
+import PeopleDetails from "../Details";
+import Link from "next/link";
 
-export default function PeopleTable() {
-  const { cid } = useParams();
+export default function PeopleTable({ users = [], fetchUsers }: { users?: any[]; fetchUsers: () => void; }) {
+  const [showDetails, setShowDetails] = useState(false);
+  const [showUserId, setShowUserId] = useState<string | null>(null);
+
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const isFaculty = currentUser?.role === "FACULTY" || currentUser?.role === "INSTRUCTOR" || currentUser?.role === "ADMIN";
-
-  const [users, setUsers] = useState<User[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<Partial<User> | null>(null);
   const [formData, setFormData] = useState<Partial<User>>({
@@ -27,16 +28,6 @@ export default function PeopleTable() {
     section: "",
     loginId: "",
   });
-
-  const fetchUsers = useCallback(async () => {
-    if (!cid || Array.isArray(cid)) return;
-    try {
-      const data = await client.findUsersForCourse(cid);
-      setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  }, [cid]);
 
   useEffect(() => {
     fetchUsers();
@@ -68,8 +59,8 @@ export default function PeopleTable() {
 
   const handleSave = async () => {
     try {
-      if (editingUser?.id) {
-        await client.updateUser(editingUser.id, formData);
+      if (editingUser?._id) {
+        await client.updateUser(editingUser._id, formData);
       } else {
         await client.createUser(formData);
       }
@@ -93,6 +84,15 @@ export default function PeopleTable() {
 
   return (
     <div id="wd-people-table" className="p-5">
+      {showDetails && (
+       <PeopleDetails
+         uid={showUserId}
+         onClose={() => {
+           setShowDetails(false);
+           fetchUsers();
+         }}/>
+     )}
+
       {isFaculty && (
         <Button variant="primary" className="mb-3" onClick={() => handleShowModal()}>
           <FaPlus className="me-2" /> Add User
@@ -113,11 +113,17 @@ export default function PeopleTable() {
         </thead>
         <tbody>
           {users.map((user: User) => (
-            <tr key={user.id}>
+            <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
+                <span className="text-decoration-none"
+                 onClick={() => {
+                   setShowDetails(true);
+                   setShowUserId(user._id);
+                 }} >
                 <FaUserCircle className="me-2 fs-1 text-secondary" />
                 <span className="wd-first-name">{user.firstName} </span>
                 <span className="wd-last-name">{user.lastName}</span>
+                </span>
               </td>
               <td className="wd-login-id">{user.loginId}</td>
               <td className="wd-section">{user.section}</td>
@@ -137,7 +143,7 @@ export default function PeopleTable() {
                   <Button
                     variant="outline-danger"
                     size="sm"
-                    onClick={() => handleDelete(user.id)}
+                    onClick={() => handleDelete(user._id)}
                   >
                     <FaTrash />
                   </Button>

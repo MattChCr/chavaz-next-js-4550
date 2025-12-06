@@ -52,7 +52,7 @@ export type Enrollment = {
 };
 
 export type User = {
-  id: string;
+  _id: string;
   username: string;
   password: string;
   firstName: string;
