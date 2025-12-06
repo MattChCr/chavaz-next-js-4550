@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { FaUserCircle, FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -9,9 +9,8 @@ import { RootState } from "../../../../store";
 import * as client from "../../../../Courses/client";
 import type { User } from "../../../../Database";
 import PeopleDetails from "../Details";
-import Link from "next/link";
 
-export default function PeopleTable({ users = [], fetchUsers }: { users?: any[]; fetchUsers: () => void; }) {
+export default function PeopleTable({ users = [], fetchUsers }: { users?: User[]; fetchUsers: () => void; }) {
   const [showDetails, setShowDetails] = useState(false);
   const [showUserId, setShowUserId] = useState<string | null>(null);
 

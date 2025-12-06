@@ -3,15 +3,14 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import PeopleTable from "../../Courses/[cid]/People/Table/page";
 import * as client from "../client";
+import { User } from "../client";
 import { FormControl } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
 export default function Users() {
- const [users, setUsers] = useState<any[]>([]);
+ const [users, setUsers] = useState<User[]>([]);
   const [role, setRole] = useState("");
-  const [name, setName] = useState("");
 
   const filterUsersByName = async (name: string) => {
-    setName(name);
     if (name) {
       const users = await client.findUsersByPartialName(name);
       setUsers(users);
