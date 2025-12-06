@@ -1,6 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import PeopleTable from "../../Courses/[cid]/People/Table/page";
 import * as client from "../client";
 import { User } from "../client";
@@ -43,14 +42,13 @@ export default function Users() {
   };
 
 
- const { uid } = useParams();
- const fetchUsers = async () => {
+ const fetchUsers = useCallback(async () => {
    const users = await client.findAllUsers();
    setUsers(users);
- };
+ }, []);
  useEffect(() => {
    fetchUsers();
- }, [uid]);
+ }, [fetchUsers]);
  return (
    <div>
     <button onClick={createUser} className="float-end btn btn-danger wd-add-people">

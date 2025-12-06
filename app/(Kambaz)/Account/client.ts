@@ -37,12 +37,12 @@ export const deleteUser = async (userId: string) => {
   return response.data;
 };
 
-export const updateUser = async (user: User) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/${user._id}`, user);
+export const updateUser = async (userId: string, user: Partial<User>) => {
+  const response = await axiosWithCredentials.put(`${USERS_API}/${userId}`, user);
   return response.data;
 };
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: Partial<User>) => {
   const response = await axios.post(`${USERS_API}`, user);
   return response.data;
 };

@@ -6,8 +6,8 @@ import { Table, Button, Modal, Form } from "react-bootstrap";
 import { FaUserCircle, FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-import * as client from "../../../../Courses/client";
-import type { User } from "../../../../Database";
+import * as client from "../../../../Account/client";
+import type { User } from "../../../../Account/client";
 import PeopleDetails from "../Details";
 
 export default function PeopleTable({ users = [], fetchUsers }: { users?: User[]; fetchUsers: () => void; }) {
@@ -112,12 +112,12 @@ export default function PeopleTable({ users = [], fetchUsers }: { users?: User[]
         </thead>
         <tbody>
           {users.map((user: User) => (
-            <tr key={user._id}>
+            <tr key={user._id || user.username}>
               <td className="wd-full-name text-nowrap">
                 <span className="text-decoration-none"
                  onClick={() => {
                    setShowDetails(true);
-                   setShowUserId(user._id);
+                   setShowUserId(user._id ?? null);
                  }} >
                 <FaUserCircle className="me-2 fs-1 text-secondary" />
                 <span className="wd-first-name">{user.firstName} </span>
@@ -142,7 +142,7 @@ export default function PeopleTable({ users = [], fetchUsers }: { users?: User[]
                   <Button
                     variant="outline-danger"
                     size="sm"
-                    onClick={() => handleDelete(user._id)}
+                    onClick={() => user._id && handleDelete(user._id)}
                   >
                     <FaTrash />
                   </Button>

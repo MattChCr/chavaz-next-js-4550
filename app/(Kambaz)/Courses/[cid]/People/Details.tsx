@@ -12,7 +12,7 @@ const [name, setName] = useState("");
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
     const updatedUser = { ...user, firstName, lastName };
-    await client.updateUser(updatedUser);
+    await client.updateUser(user._id!, updatedUser);
     setUser(updatedUser);
     setEditing(false);
     onClose();
