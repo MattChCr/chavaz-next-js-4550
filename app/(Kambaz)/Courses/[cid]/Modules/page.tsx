@@ -43,7 +43,7 @@ export default function Modules() {
   const handleDeleteModule = async (moduleId: string) => {
     if (!cid || Array.isArray(cid)) return;
     await client.deleteModule(cid, moduleId);
-    dispatch(deleteModule(moduleId));
+    dispatch(setModules(modules.filter((m: Module) => m._id !== moduleId)));
   };
 
   const handleEditModule = (moduleId: string) => {
@@ -55,8 +55,12 @@ export default function Modules() {
   };
 
   const handleUpdateModule = async (updatedModule: Module) => {
-    await client.updateModule(updatedModule);
-    dispatch(updateModule(updatedModule));
+    if (!cid || Array.isArray(cid)) return;
+    await client.updateModule(cid, updatedModule);
+    const newModules = modules.map((m: Module) =>
+      m._id === updatedModule._id ? updatedModule : m
+    );
+    dispatch(setModules(newModules));
   };
 
   return (

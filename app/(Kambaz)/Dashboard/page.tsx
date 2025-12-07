@@ -17,9 +17,8 @@ import {
   Row,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse, setCourses} from "../Courses/reducer";
+import { setCourses } from "../Courses/reducer";
 import { RootState } from "../store";
-import { enroll, unenroll } from "./enrollmentsReducer";
 
 export default function Dashboard() {
   const courses = useSelector<RootState, Course[]>(
@@ -27,7 +26,6 @@ export default function Dashboard() {
   );
 
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const dispatch = useDispatch();
 
   const [showAllCourses, setShowAllCourses] = useState(false);
@@ -103,8 +101,7 @@ export default function Dashboard() {
   const handleEnroll = async (courseId: string) => {
     try {
       await client.enrollInCourse(courseId);
-      dispatch(enroll({ user: currentUser?._id, course: courseId }));
-      // Refresh enrolled courses
+      // Refresh enrolled courses from server
       fetchCourses();
     } catch (error) {
       console.error("Error enrolling:", error);
@@ -114,18 +111,16 @@ export default function Dashboard() {
   const handleUnenroll = async (courseId: string) => {
     try {
       await client.unenrollFromCourse(courseId);
-      dispatch(unenroll({ user: currentUser?._id, course: courseId }));
-      // Refresh enrolled courses
+      // Refresh enrolled courses from server
       fetchCourses();
     } catch (error) {
       console.error("Error unenrolling:", error);
     }
   };
 
+  // Check if user is enrolled by seeing if course exists in their enrolled courses
   const isEnrolled = (courseId: string) => {
-    return enrollments.some(
-      (e) => e.user === currentUser?._id && e.course === courseId
-    );
+    return courses.some((c) => c._id === courseId);
   };
 
   useEffect(() => {
