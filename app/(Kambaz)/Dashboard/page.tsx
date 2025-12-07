@@ -100,7 +100,8 @@ export default function Dashboard() {
 
   const handleEnroll = async (courseId: string) => {
     try {
-      await client.enrollInCourse(courseId);
+      if (!currentUser?._id) return;
+      await client.enrollIntoCourse(currentUser._id, courseId);
       // Refresh enrolled courses from server
       fetchCourses();
     } catch (error) {
@@ -110,7 +111,8 @@ export default function Dashboard() {
 
   const handleUnenroll = async (courseId: string) => {
     try {
-      await client.unenrollFromCourse(courseId);
+      if (!currentUser?._id) return;
+      await client.unenrollFromCourse(currentUser._id, courseId);
       // Refresh enrolled courses from server
       fetchCourses();
     } catch (error) {
