@@ -17,11 +17,9 @@ export const createCourse = async (course: Course) => {
   return data;
 };
 
-export const deleteCourse = async (courseId: string, moduleId: string) => {
-  const response = await axios.delete(
-   `${COURSES_API}/${courseId}/modules/${moduleId}`
- );
- return response.data;
+export const deleteCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${courseId}`);
+  return data;
 };
 
 export const updateCourse = async (course: Course) => {
