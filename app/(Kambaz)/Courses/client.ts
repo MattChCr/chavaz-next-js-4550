@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Course, Module, Assignment, User } from "../Database";
+import type { Course, Module, Assignment, User, Quiz, QuizAttempt } from "../Database";
 
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
@@ -128,4 +128,71 @@ export const updateUser = async (userId: string, user: Partial<User>) => {
 export const deleteUser = async (userId: string) => {
   const { data } = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
   return data;
+};
+
+// Quizzes
+export const findQuizzesForCourse = async (courseId: string) => {
+  const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes`);
+  return response.data;
+};
+
+export const createQuizForCourse = async (
+  courseId: string,
+  quiz: Partial<Quiz>
+) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes`,
+    quiz
+  );
+  return response.data;
+};
+
+export const updateQuiz = async (courseId: string, quiz: Quiz) => {
+  const { data } = await axiosWithCredentials.put(
+    `${COURSES_API}/${courseId}/quizzes/${quiz._id}`,
+    quiz
+  );
+  return data;
+};
+
+export const deleteQuiz = async (courseId: string, quizId: string) => {
+  const { data } = await axiosWithCredentials.delete(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}`
+  );
+  return data;
+};
+
+export const publishQuiz = async (courseId: string, quizId: string, published: boolean) => {
+  const { data } = await axiosWithCredentials.put(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/publish`,
+    { published }
+  );
+  return data;
+};
+
+// Quiz Attempts
+export const findAttemptsForQuiz = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/attempts`
+  );
+  return response.data;
+};
+
+export const findMyAttemptForQuiz = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/attempts/me`
+  );
+  return response.data;
+};
+
+export const submitQuizAttempt = async (
+  courseId: string,
+  quizId: string,
+  attempt: Partial<QuizAttempt>
+) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/attempts`,
+    attempt
+  );
+  return response.data;
 };

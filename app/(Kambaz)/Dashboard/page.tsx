@@ -132,6 +132,7 @@ export default function Dashboard() {
 
   // Determine which courses to display
   const displayedCourses = showAllCourses ? allCourses : courses;
+  const isFaculty = currentUser?.role === "FACULTY";
 
   return (
     <div id="wd-dashboard">
@@ -145,41 +146,45 @@ export default function Dashboard() {
         {showAllCourses ? "Show My Courses" : "Show All Courses (Enrollments)"}
       </Button>
       <hr />
-      <h5>
-        {course._id ? "Edit Course" : "New Course"}
-        <button
-          className="btn btn-primary float-end me-2"
-          id="wd-add-new-course-click"
-          onClick={onAddNewCourse}
-        >
-          Add
-        </button>
-        {course._id && (
-          <button
-            className="btn btn-warning float-end"
-            id="wd-update-course-click"
-            onClick={onUpdateCourse}
-          >
-            Update
-          </button>
-        )}
-      </h5>
-      <hr />
-      <FormControl
-        value={course.name}
-        className="mb-2"
-        placeholder="Course Name"
-        onChange={(e) => setCourse({ ...course, name: e.target.value })}
-      />
-      <FormControl
-        as="textarea"
-        value={course.description}
-        rows={3}
-        placeholder="Course Description"
-        onChange={(e) =>
-          setCourse({ ...course, description: e.target.value })
-        }
-      />
+      {isFaculty && (
+        <>
+          <h5>
+            {course._id ? "Edit Course" : "New Course"}
+            <button
+              className="btn btn-primary float-end me-2"
+              id="wd-add-new-course-click"
+              onClick={onAddNewCourse}
+            >
+              Add
+            </button>
+            {course._id && (
+              <button
+                className="btn btn-warning float-end"
+                id="wd-update-course-click"
+                onClick={onUpdateCourse}
+              >
+                Update
+              </button>
+            )}
+          </h5>
+          <hr />
+          <FormControl
+            value={course.name}
+            className="mb-2"
+            placeholder="Course Name"
+            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+          />
+          <FormControl
+            as="textarea"
+            value={course.description}
+            rows={3}
+            placeholder="Course Description"
+            onChange={(e) =>
+              setCourse({ ...course, description: e.target.value })
+            }
+          />
+        </>
+      )}
       <h2 id="wd-dashboard-published">
         {showAllCourses ? "All Courses" : "My Courses"} ({displayedCourses.length})
       </h2>
@@ -212,26 +217,30 @@ export default function Dashboard() {
                     {!showAllCourses && (
                       <>
                         <Button variant="primary"> Go </Button>
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            setCourse(c);
-                          }}
-                          className="btn btn-warning me-2 float-end"
-                          id="wd-edit-course-click"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            onDeleteCourse(c._id);
-                          }}
-                          className="btn btn-danger float-end"
-                          id="wd-delete-course-click"
-                        >
-                          Delete
-                        </button>
+                        {isFaculty && (
+                          <>
+                            <button
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setCourse(c);
+                              }}
+                              className="btn btn-warning me-2 float-end"
+                              id="wd-edit-course-click"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={(event) => {
+                                event.preventDefault();
+                                onDeleteCourse(c._id);
+                              }}
+                              className="btn btn-danger float-end"
+                              id="wd-delete-course-click"
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                     {showAllCourses && (

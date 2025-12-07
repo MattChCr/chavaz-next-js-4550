@@ -59,11 +59,54 @@ export type User = {
   lastName: string;
   email: string;
   dob: string;
-  role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
+  role: "STUDENT" | "FACULTY" | "INSTRUCTOR" | "ADMIN";
   loginId: string;
   section: string;
   lastActivity: string;
   totalActivity: string;
+};
+
+export type QuizQuestion = {
+  _id: string;
+  title: string;
+  type: "MULTIPLE_CHOICE" | "TRUE_FALSE" | "FILL_IN_BLANK";
+  points: number;
+  question: string;
+  choices?: string[];
+  correctAnswer: string | string[];
+};
+
+export type Quiz = {
+  _id: string;
+  title: string;
+  course: string;
+  description: string;
+  quizType: "GRADED_QUIZ" | "PRACTICE_QUIZ" | "GRADED_SURVEY" | "UNGRADED_SURVEY";
+  points: number;
+  assignmentGroup: "QUIZZES" | "EXAMS" | "ASSIGNMENTS" | "PROJECT";
+  shuffleAnswers: boolean;
+  timeLimit: number;
+  multipleAttempts: boolean;
+  howManyAttempts: number;
+  showCorrectAnswers: boolean;
+  accessCode: string;
+  oneQuestionAtATime: boolean;
+  webcamRequired: boolean;
+  lockQuestionsAfterAnswering: boolean;
+  dueDate: string;
+  availableDate: string;
+  untilDate: string;
+  published: boolean;
+  questions: QuizQuestion[];
+};
+
+export type QuizAttempt = {
+  _id: string;
+  quiz: string;
+  user: string;
+  answers: { questionId: string; answer: string | string[] }[];
+  score: number;
+  submittedAt: string;
 };
 
 const courses = coursesJson as Course[];
