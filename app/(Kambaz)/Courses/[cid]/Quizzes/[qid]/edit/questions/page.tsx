@@ -202,7 +202,7 @@ export default function QuizQuestionsEditor() {
 
       {questions.length === 0 ? (
         <div className="text-center text-muted p-5 border rounded">
-          No questions yet. Click "+ New Question" to add one.
+          No questions yet. Click the + New Question button to add one.
         </div>
       ) : (
         <ListGroup className="mb-4">
