@@ -8,39 +8,8 @@ import { Button, Table } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
 import { setQuizzes } from "../reducer";
+import { formatDateTime } from "../FormatDate";
 import type { Quiz } from "../../../../Database";
-
-function formatDate(dateString: string): string {
-  if (!dateString) return "—";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
-
-function formatQuizType(type: string): string {
-  const types: Record<string, string> = {
-    GRADED_QUIZ: "Graded Quiz",
-    PRACTICE_QUIZ: "Practice Quiz",
-    GRADED_SURVEY: "Graded Survey",
-    UNGRADED_SURVEY: "Ungraded Survey",
-  };
-  return types[type] || type;
-}
-
-function formatAssignmentGroup(group: string): string {
-  const groups: Record<string, string> = {
-    QUIZZES: "Quizzes",
-    EXAMS: "Exams",
-    ASSIGNMENTS: "Assignments",
-    PROJECT: "Project",
-  };
-  return groups[group] || group;
-}
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
@@ -76,12 +45,24 @@ export default function QuizDetails() {
     return <div className="p-4">Loading quiz...</div>;
   }
 
-  // Calculate total points from questions
   const totalPoints = quiz.questions?.reduce((sum, q) => sum + (q.points || 0), 0) || quiz.points || 0;
+
+  const quizTypeLabels: Record<string, string> = {
+    GRADED_QUIZ: "Graded Quiz",
+    PRACTICE_QUIZ: "Practice Quiz",
+    GRADED_SURVEY: "Graded Survey",
+    UNGRADED_SURVEY: "Ungraded Survey",
+  };
+
+  const assignmentGroupLabels: Record<string, string> = {
+    QUIZZES: "Quizzes",
+    EXAMS: "Exams",
+    ASSIGNMENTS: "Assignments",
+    PROJECT: "Project",
+  };
 
   return (
     <div id="wd-quiz-details" className="p-4">
-      {/* Action Buttons */}
       <div className="d-flex justify-content-center gap-2 mb-4">
         {isFaculty ? (
           <>
@@ -111,15 +92,13 @@ export default function QuizDetails() {
 
       <hr />
 
-      {/* Quiz Title */}
       <h2 className="mb-4">{quiz.title}</h2>
 
-      {/* Quiz Properties Table */}
       <Table borderless className="w-auto">
         <tbody>
           <tr>
             <td className="text-end pe-3 fw-bold">Quiz Type</td>
-            <td>{formatQuizType(quiz.quizType)}</td>
+            <td>{quizTypeLabels[quiz.quizType] || quiz.quizType}</td>
           </tr>
           <tr>
             <td className="text-end pe-3 fw-bold">Points</td>
@@ -127,7 +106,7 @@ export default function QuizDetails() {
           </tr>
           <tr>
             <td className="text-end pe-3 fw-bold">Assignment Group</td>
-            <td>{formatAssignmentGroup(quiz.assignmentGroup)}</td>
+            <td>{assignmentGroupLabels[quiz.assignmentGroup] || quiz.assignmentGroup}</td>
           </tr>
           <tr>
             <td className="text-end pe-3 fw-bold">Shuffle Answers</td>
@@ -169,20 +148,19 @@ export default function QuizDetails() {
           </tr>
           <tr>
             <td className="text-end pe-3 fw-bold">Due Date</td>
-            <td>{formatDate(quiz.dueDate)}</td>
+            <td>{formatDateTime(quiz.dueDate) || "—"}</td>
           </tr>
           <tr>
             <td className="text-end pe-3 fw-bold">Available Date</td>
-            <td>{formatDate(quiz.availableDate)}</td>
+            <td>{formatDateTime(quiz.availableDate) || "—"}</td>
           </tr>
           <tr>
             <td className="text-end pe-3 fw-bold">Until Date</td>
-            <td>{formatDate(quiz.untilDate)}</td>
+            <td>{formatDateTime(quiz.untilDate) || "—"}</td>
           </tr>
         </tbody>
       </Table>
 
-      {/* Back button */}
       <div className="mt-4">
         <Button
           variant="outline-secondary"
@@ -194,4 +172,3 @@ export default function QuizDetails() {
     </div>
   );
 }
-

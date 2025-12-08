@@ -104,8 +104,9 @@ export type QuizAttempt = {
   _id: string;
   quiz: string;
   user: string;
-  answers: { questionId: string; answer: string | string[] }[];
+  answers: { questionId: string; answer: string }[];
   score: number;
+  attemptNumber: number;
   submittedAt: string;
 };
 

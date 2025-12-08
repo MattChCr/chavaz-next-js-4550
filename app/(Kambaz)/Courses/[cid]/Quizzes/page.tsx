@@ -11,39 +11,8 @@ import { IoRocketOutline } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
 import { setQuizzes, deleteQuiz, updateQuiz } from "./reducer";
+import { formatDateTime } from "./FormatDate";
 import type { Quiz, QuizAttempt } from "../../../Database";
-
-function getAvailabilityStatus(quiz: Quiz): { text: string; className: string } {
-  const now = new Date();
-  const availableDate = quiz.availableDate ? new Date(quiz.availableDate) : null;
-  const untilDate = quiz.untilDate ? new Date(quiz.untilDate) : null;
-
-  if (untilDate && now > untilDate) {
-    return { text: "Closed", className: "text-danger" };
-  }
-  if (availableDate && now < availableDate) {
-    return { 
-      text: `Not available until ${availableDate.toLocaleDateString()}`, 
-      className: "text-muted" 
-    };
-  }
-  if (availableDate && (!untilDate || now <= untilDate)) {
-    return { text: "Available", className: "text-success" };
-  }
-  return { text: "Available", className: "text-success" };
-}
-
-function formatDate(dateString: string): string {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -131,9 +100,23 @@ export default function Quizzes() {
     ? quizzes 
     : quizzes.filter((q) => q.published);
 
+  // Get availability status text
+  const getAvailability = (quiz: Quiz) => {
+    const now = new Date();
+    const availableDate = quiz.availableDate ? new Date(quiz.availableDate) : null;
+    const untilDate = quiz.untilDate ? new Date(quiz.untilDate) : null;
+
+    if (untilDate && now > untilDate) {
+      return <span className="text-danger">Closed</span>;
+    }
+    if (availableDate && now < availableDate) {
+      return <span className="text-muted">Not available until {formatDateTime(quiz.availableDate)}</span>;
+    }
+    return <span className="text-success">Available</span>;
+  };
+
   return (
     <div id="wd-quizzes" className="p-3">
-      {/* Controls - only for faculty */}
       {isFaculty && (
         <div className="d-flex justify-content-end mb-3">
           <Button variant="danger" onClick={handleAddQuiz}>
@@ -155,85 +138,76 @@ export default function Quizzes() {
               : "No quizzes available for this course."}
           </ListGroupItem>
         ) : (
-          displayedQuizzes.map((quiz) => {
-            const availability = getAvailabilityStatus(quiz);
-            const attempt = attempts[quiz._id];
-            const questionCount = quiz.questions?.length || 0;
-
-            return (
-              <ListGroupItem
-                key={quiz._id}
-                className="wd-quiz-list-item p-3 ps-1 d-flex align-items-start justify-content-between"
-              >
-                <div className="d-flex align-items-start">
-                  <BsGripVertical className="me-2 fs-3 text-muted mt-1" />
-                  <IoRocketOutline className="me-3 fs-3 text-success mt-1" />
-                  <div>
-                    <div className="d-flex align-items-center gap-2">
-                      <Link
-                        href={`/Courses/${cid}/Quizzes/${quiz._id}`}
-                        className="wd-quiz-link fw-bold text-decoration-none"
+          displayedQuizzes.map((quiz) => (
+            <ListGroupItem
+              key={quiz._id}
+              className="wd-quiz-list-item p-3 ps-1 d-flex align-items-start justify-content-between"
+            >
+              <div className="d-flex align-items-start">
+                <BsGripVertical className="me-2 fs-3 text-muted mt-1" />
+                <IoRocketOutline className="me-3 fs-3 text-success mt-1" />
+                <div>
+                  <div className="d-flex align-items-center gap-2">
+                    <Link
+                      href={`/Courses/${cid}/Quizzes/${quiz._id}`}
+                      className="wd-quiz-link fw-bold text-decoration-none"
+                    >
+                      {quiz.title}
+                    </Link>
+                    {isFaculty && (
+                      <span
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleTogglePublish(quiz);
+                        }}
+                        style={{ cursor: "pointer" }}
+                        title={quiz.published ? "Click to unpublish" : "Click to publish"}
                       >
-                        {quiz.title}
-                      </Link>
-                      {/* Publish status icon - clickable for faculty */}
-                      {isFaculty ? (
-                        <span
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleTogglePublish(quiz);
-                          }}
-                          style={{ cursor: "pointer" }}
-                          title={quiz.published ? "Click to unpublish" : "Click to publish"}
-                        >
-                          {quiz.published ? "✅" : "🚫"}
-                        </span>
-                      ) : null}
-                    </div>
-                    <div className="text-muted small">
-                      <span className={availability.className}>{availability.text}</span>
-                      {quiz.dueDate && (
-                        <> | <strong>Due:</strong> {formatDate(quiz.dueDate)}</>
-                      )}
-                      <> | {quiz.points} pts</>
-                      <> | {questionCount} Questions</>
-                      {/* Show score for students if they have an attempt */}
-                      {!isFaculty && attempt && (
-                        <> | <strong>Score:</strong> {attempt.score}%</>
-                      )}
-                    </div>
+                        {quiz.published ? "✅" : "🚫"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-muted small">
+                    {getAvailability(quiz)}
+                    {quiz.dueDate && (
+                      <> | <strong>Due:</strong> {formatDateTime(quiz.dueDate)}</>
+                    )}
+                    <> | {quiz.points} pts</>
+                    <> | {quiz.questions?.length || 0} Questions</>
+                    {!isFaculty && attempts[quiz._id] && (
+                      <> | <strong>Score:</strong> {attempts[quiz._id]?.score}%</>
+                    )}
                   </div>
                 </div>
+              </div>
 
-                {/* Context menu - only for faculty */}
-                {isFaculty && (
-                  <Dropdown align="end">
-                    <Dropdown.Toggle
-                      variant="link"
-                      className="text-dark p-0 border-0"
-                      id={`quiz-dropdown-${quiz._id}`}
+              {isFaculty && (
+                <Dropdown align="end">
+                  <Dropdown.Toggle
+                    variant="link"
+                    className="text-dark p-0 border-0"
+                    id={`quiz-dropdown-${quiz._id}`}
+                  >
+                    <BsThreeDotsVertical className="fs-5" />
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => router.push(`/Courses/${cid}/Quizzes/${quiz._id}`)}
                     >
-                      <BsThreeDotsVertical className="fs-5" />
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item
-                        onClick={() => router.push(`/Courses/${cid}/Quizzes/${quiz._id}`)}
-                      >
-                        Edit
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleDelete(quiz._id)}>
-                        Delete
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleTogglePublish(quiz)}>
-                        {quiz.published ? "Unpublish" : "Publish"}
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                )}
-              </ListGroupItem>
-            );
-          })
+                      Edit
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleDelete(quiz._id)}>
+                      Delete
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleTogglePublish(quiz)}>
+                      {quiz.published ? "Unpublish" : "Publish"}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+            </ListGroupItem>
+          ))
         )}
       </ListGroup>
     </div>
