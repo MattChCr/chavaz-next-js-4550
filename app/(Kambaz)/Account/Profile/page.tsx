@@ -65,6 +65,7 @@ export default function Profile() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleChange("username", e.target.value)
         }
+        placeholder="Username"
         className="mb-2"
       />
       <FormControl
@@ -73,6 +74,7 @@ export default function Profile() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleChange("password", e.target.value)
         }
+        placeholder="Password"
         className="mb-2"
       />
       <FormControl
@@ -80,6 +82,7 @@ export default function Profile() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleChange("firstName", e.target.value)
         }
+        placeholder="First Name"
         className="mb-2"
       />
       <FormControl
@@ -87,6 +90,7 @@ export default function Profile() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleChange("lastName", e.target.value)
         }
+        placeholder="Last Name"
         className="mb-2"
       />
       <FormControl
@@ -95,6 +99,7 @@ export default function Profile() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleChange("dob", e.target.value)
         }
+        placeholder="Date of Birth"
         className="mb-2"
       />
       <FormControl
@@ -102,6 +107,7 @@ export default function Profile() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleChange("email", e.target.value)
         }
+        placeholder="Email"
         className="mb-2"
       />
       <select
