@@ -6,7 +6,8 @@ export default function LabsLayout({ children }:
  return (
   <div>
     <h1> Matthew Chavez Cruz - Section 1: Welcome to Web Dev </h1>
-    <a href="https://github.com/MattChCr/chavaz-next-js-4550"> Link to Github!</a>
+    <a href="https://github.com/MattChCr/chavaz-next-js-4550"> Link to Github Front End!</a>
+    <a href="https://github.com/MattChCr/kambaz-node-server-app"> Link to Github Back End! </a>
 
     <h1> Labs</h1>
    <table>
