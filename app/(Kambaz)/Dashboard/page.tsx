@@ -77,7 +77,6 @@ export default function Dashboard() {
 
   const onAddNewCourse = async () => {
     await client.createCourse(course);
-    // Re-fetch courses from backend to ensure persistence
     fetchCourses();
     fetchAllCourses();
     resetForm();
@@ -85,14 +84,12 @@ export default function Dashboard() {
 
   const onDeleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
-    // Re-fetch courses from backend to ensure persistence
     fetchCourses();
     fetchAllCourses();
   };
 
   const onUpdateCourse = async () => {
     await client.updateCourse(course);
-    // Re-fetch courses from backend to ensure persistence
     fetchCourses();
     fetchAllCourses();
     resetForm();
@@ -102,7 +99,6 @@ export default function Dashboard() {
     try {
       if (!currentUser?._id) return;
       await client.enrollIntoCourse(currentUser._id, courseId);
-      // Refresh enrolled courses from server
       fetchCourses();
     } catch (error) {
       console.error("Error enrolling:", error);
@@ -113,14 +109,12 @@ export default function Dashboard() {
     try {
       if (!currentUser?._id) return;
       await client.unenrollFromCourse(currentUser._id, courseId);
-      // Refresh enrolled courses from server
       fetchCourses();
     } catch (error) {
       console.error("Error unenrolling:", error);
     }
   };
 
-  // Check if user is enrolled by seeing if course exists in their enrolled courses
   const isEnrolled = (courseId: string) => {
     return courses.some((c) => c._id === courseId);
   };
@@ -130,7 +124,6 @@ export default function Dashboard() {
     fetchAllCourses();
   }, [currentUser]);
 
-  // Determine which courses to display
   const displayedCourses = showAllCourses ? allCourses : courses;
   const isFaculty = currentUser?.role === "FACULTY";
 

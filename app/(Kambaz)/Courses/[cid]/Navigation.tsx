@@ -14,12 +14,12 @@ const links = [
   { label: "Assignments" },
   { label: "Quizzes" },
   { label: "Grades" },
-  { label: "People", pathOverride: "People/Table" }, // Optional override for nested route
+  { label: "People", pathOverride: "People/Table" },
 ];
 
 export default function CourseNavigation() {
   const pathname = usePathname();
-  const { cid } = useParams(); // dynamic course ID
+  const { cid } = useParams();
 
   return (
     <ListGroup

@@ -24,7 +24,6 @@ export default function QuizQuestionsEditor() {
   const [questions, setQuestions] = useState<QuizQuestion[]>(existingQuiz?.questions || []);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Edit form state
   const [editTitle, setEditTitle] = useState("");
   const [editType, setEditType] = useState<QuizQuestion["type"]>("MULTIPLE_CHOICE");
   const [editPoints, setEditPoints] = useState(10);
@@ -64,7 +63,6 @@ export default function QuizQuestionsEditor() {
       correctAnswer: "",
     };
     setQuestions([...questions, newQuestion]);
-    // Reset form state for new question
     setEditingId(newQuestion._id);
     setEditTitle(newQuestion.title);
     setEditType(newQuestion.type);
@@ -99,7 +97,6 @@ export default function QuizQuestionsEditor() {
   };
 
   const handleCancelEdit = () => {
-    // If it's a new unsaved question, remove it
     const original = existingQuiz?.questions?.find(q => q._id === editingId);
     if (!original) {
       setQuestions(questions.filter(q => q._id !== editingId));
@@ -209,7 +206,6 @@ export default function QuizQuestionsEditor() {
           {questions.map((question, index) => (
             <ListGroupItem key={question._id} className="p-3">
               {editingId === question._id ? (
-                // Edit Mode
                 <Card className="border-primary">
                   <Card.Body>
                     <Row className="mb-3">
@@ -261,7 +257,6 @@ export default function QuizQuestionsEditor() {
                       />
                     </Form.Group>
 
-                    {/* Multiple Choice Options */}
                     {editType === "MULTIPLE_CHOICE" && (
                       <Form.Group className="mb-3">
                         <Form.Label>Answers</Form.Label>
@@ -305,7 +300,6 @@ export default function QuizQuestionsEditor() {
                       </Form.Group>
                     )}
 
-                    {/* True/False Options */}
                     {editType === "TRUE_FALSE" && (
                       <Form.Group className="mb-3">
                         <Form.Label>Correct Answer</Form.Label>
@@ -330,7 +324,6 @@ export default function QuizQuestionsEditor() {
                       </Form.Group>
                     )}
 
-                    {/* Fill in the Blank */}
                     {editType === "FILL_IN_BLANK" && (
                       <Form.Group className="mb-3">
                         <Form.Label>Possible Correct Answers</Form.Label>
@@ -381,7 +374,6 @@ export default function QuizQuestionsEditor() {
                   </Card.Body>
                 </Card>
               ) : (
-                // Preview Mode
                 <div className="d-flex justify-content-between align-items-start">
                   <div>
                     <div className="d-flex align-items-center gap-2 mb-2">

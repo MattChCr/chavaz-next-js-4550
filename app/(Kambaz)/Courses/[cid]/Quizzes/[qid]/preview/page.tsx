@@ -114,14 +114,12 @@ export default function PreviewQuiz() {
 
       <h2>{quiz.title}</h2>
       
-      {/* Quiz Info */}
       <div className="mb-4 text-muted">
         {quiz.timeLimit > 0 && <span>Time Limit: {quiz.timeLimit} minutes | </span>}
         <span>Points: {quiz.questions?.reduce((sum, q) => sum + q.points, 0) || 0} | </span>
         <span>Questions: {quiz.questions?.length || 0}</span>
       </div>
 
-      {/* Score after submit */}
       {isSubmitted && (
         <Alert variant={score !== null && score >= 70 ? "success" : "warning"}>
           <div className="d-flex justify-content-between align-items-center">
@@ -133,7 +131,6 @@ export default function PreviewQuiz() {
         </Alert>
       )}
 
-      {/* Questions */}
       {quiz.questions && quiz.questions.length > 0 ? (
         <div className="mb-4">
           {quiz.questions.map((question, index) => {
@@ -162,7 +159,6 @@ export default function PreviewQuiz() {
                 <Card.Body>
                   <p className="mb-3">{question.question}</p>
 
-                  {/* Multiple Choice */}
                   {question.type === "MULTIPLE_CHOICE" && question.choices && (
                     <div>
                       {question.choices.map((choice, i) => {
@@ -194,7 +190,6 @@ export default function PreviewQuiz() {
                     </div>
                   )}
 
-                  {/* True/False */}
                   {question.type === "TRUE_FALSE" && (
                     <div>
                       {["True", "False"].map((option) => {
@@ -226,7 +221,6 @@ export default function PreviewQuiz() {
                     </div>
                   )}
 
-                  {/* Fill in the Blank */}
                   {question.type === "FILL_IN_BLANK" && (
                     <div>
                       <Form.Control
@@ -257,7 +251,6 @@ export default function PreviewQuiz() {
         <Alert variant="warning">This quiz has no questions.</Alert>
       )}
 
-      {/* Action Buttons */}
       <div className="d-flex justify-content-between">
         <Button 
           variant="outline-secondary" 

@@ -95,12 +95,10 @@ export default function Quizzes() {
     dispatch(updateQuiz(updated));
   };
 
-  // Filter quizzes for students - only show published ones
   const displayedQuizzes = isFaculty 
     ? quizzes 
     : quizzes.filter((q) => q.published);
 
-  // Get availability status text
   const getAvailability = (quiz: Quiz) => {
     const now = new Date();
     const availableDate = quiz.availableDate ? new Date(quiz.availableDate) : null;

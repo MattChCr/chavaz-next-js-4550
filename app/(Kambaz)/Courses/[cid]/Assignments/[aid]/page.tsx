@@ -26,7 +26,6 @@ export default function AssignmentEditor() {
   const [availableFrom, setAvailableFrom] = useState(existingAssignment?.availableFrom ?? "");
   const [availableUntil, setAvailableUntil] = useState(existingAssignment?.availableUntil ?? "");
 
-  // Fetch assignments if not loaded yet (for direct navigation to edit page)
   const fetchAssignments = useCallback(async () => {
     if (!cid || Array.isArray(cid)) return;
     if (assignments.length === 0) {
@@ -39,7 +38,6 @@ export default function AssignmentEditor() {
     fetchAssignments();
   }, [fetchAssignments]);
 
-  // Update form when assignment is loaded
   useEffect(() => {
     if (existingAssignment && !isNewAssignment) {
       setTitle(existingAssignment.title ?? "");

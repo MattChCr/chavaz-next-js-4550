@@ -31,23 +31,36 @@ export default function Profile() {
     const userToUpdate = { ...currentUser, ...profile };
     const updatedProfile = await client.updateUser(currentUser._id!, userToUpdate);
     dispatch(setCurrentUser(updatedProfile));
+    setProfile({
+      ...updatedProfile as UserProfile,
+      dob: formatDateForInput((updatedProfile as UserProfile).dob || ""),
+    });
+    router.refresh();
   };
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
+  const formatDateForInput = (dateString: string) => {
+    if (!dateString) return "";
+    return dateString.split("T")[0];
+  };
+
   useEffect(() => {
     if (!currentUser) {
-      router.push("/Account/Signin"); // client-side redirect
+      router.push("/Account/Signin");
       return;
     }
-    setProfile(currentUser as UserProfile);
+    setProfile({
+      ...currentUser as UserProfile,
+      dob: formatDateForInput((currentUser as UserProfile).dob || ""),
+    });
   }, [currentUser]);
 
   const signout = async () => {
     await client.signout();
 
     dispatch(setCurrentUser(null));
-    router.push("/Account/Signin"); // client-side redirect
+    router.push("/Account/Signin");
   };
 
   const handleChange = (field: keyof UserProfile, value: string) => {

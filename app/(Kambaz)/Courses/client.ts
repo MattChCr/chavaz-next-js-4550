@@ -67,7 +67,6 @@ export const deleteModule = async (courseId: string, moduleId: string) => {
   return data;
 };
 
-// Assignments
 export const findAssignmentsForCourse = async (courseId: string) => {
   const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/assignments`);
   return response.data;
@@ -130,7 +129,6 @@ export const deleteUser = async (userId: string) => {
   return data;
 };
 
-// Quizzes
 export const findQuizzesForCourse = async (courseId: string) => {
   const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes`);
   return response.data;
@@ -170,7 +168,6 @@ export const publishQuiz = async (courseId: string, quizId: string, published: b
   return data;
 };
 
-// Quiz Attempts
 export const findAttemptsForQuiz = async (courseId: string, quizId: string) => {
   const response = await axiosWithCredentials.get(
     `${COURSES_API}/${courseId}/quizzes/${quizId}/attempts`
