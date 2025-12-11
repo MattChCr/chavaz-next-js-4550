@@ -31,6 +31,15 @@ export default function QuizQuestionsEditor() {
   const [editChoices, setEditChoices] = useState<string[]>(["", "", "", ""]);
   const [editCorrectAnswer, setEditCorrectAnswer] = useState<string>("");
   const [editBlankAnswers, setEditBlankAnswers] = useState<string[]>([""]);
+  const [blankLimit, SetBlankLimit] = useState(false);
+  const [choiceLimit, SetChoiceLimit] = useState(false);
+  const [tfLimit, SetTfLimit] = useState(false);
+   const [blankCount, SetBlankCount] = useState(0);
+  const [choiceCount, SetChoiceCount] = useState(0);
+  const [tfCount, SetTfCount] = useState(0);
+
+
+
 
   const fetchQuizzes = useCallback(async () => {
     if (!cid || Array.isArray(cid)) return;
@@ -71,6 +80,28 @@ export default function QuizQuestionsEditor() {
     setEditChoices(newQuestion.choices || ["", "", "", ""]);
     setEditCorrectAnswer("");
     setEditBlankAnswers([""]);
+    if (choiceCount >= 3) {
+       handleCancel();
+    }
+
+    if (blankCount >= 3) {
+       handleCancel();
+    }
+
+    if (tfCount >= 3) {
+       handleCancel();
+    }
+
+    if (newQuestion.type == "MULTIPLE_CHOICE") {
+      SetChoiceCount(choiceCount + 1);
+    }
+    if (newQuestion.type == "FILL_IN_BLANK") {
+      SetBlankCount(blankCount + 1);
+    }
+    if (newQuestion.type == "TRUE_FALSE") {
+      SetTfCount(tfCount + 1);
+    }
+
   };
 
   const startEditing = (question: QuizQuestion) => {
