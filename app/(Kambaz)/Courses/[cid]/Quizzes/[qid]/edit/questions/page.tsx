@@ -31,10 +31,8 @@ export default function QuizQuestionsEditor() {
   const [editChoices, setEditChoices] = useState<string[]>(["", "", "", ""]);
   const [editCorrectAnswer, setEditCorrectAnswer] = useState<string>("");
   const [editBlankAnswers, setEditBlankAnswers] = useState<string[]>([""]);
-  const [blankLimit, SetBlankLimit] = useState(false);
-  const [choiceLimit, SetChoiceLimit] = useState(false);
-  const [tfLimit, SetTfLimit] = useState(false);
-   const [blankCount, SetBlankCount] = useState(0);
+  const [tfLimit, SetTfLimit] = useState(true);
+  const [blankCount, SetBlankCount] = useState(0);
   const [choiceCount, SetChoiceCount] = useState(0);
   const [tfCount, SetTfCount] = useState(0);
 
@@ -71,25 +69,28 @@ export default function QuizQuestionsEditor() {
       choices: ["", "", "", ""],
       correctAnswer: "",
     };
-    setQuestions([...questions, newQuestion]);
-    setEditingId(newQuestion._id);
-    setEditTitle(newQuestion.title);
-    setEditType(newQuestion.type);
-    setEditPoints(newQuestion.points);
-    setEditQuestion(newQuestion.question);
-    setEditChoices(newQuestion.choices || ["", "", "", ""]);
-    setEditCorrectAnswer("");
-    setEditBlankAnswers([""]);
+    if(tfLimit) {
+      setQuestions([...questions, newQuestion]);
+      setEditingId(newQuestion._id);
+      setEditTitle(newQuestion.title);
+      setEditType(newQuestion.type);
+      setEditPoints(newQuestion.points);
+      setEditQuestion(newQuestion.question);
+      setEditChoices(newQuestion.choices || ["", "", "", ""]);
+      setEditCorrectAnswer("");
+      setEditBlankAnswers([""]);
+    }
+    
     if (choiceCount >= 3) {
-       handleCancel();
+       SetTfLimit(false);
     }
 
     if (blankCount >= 3) {
-       handleCancel();
+       SetTfLimit(false);
     }
 
     if (tfCount >= 3) {
-       handleCancel();
+       SetTfLimit(false);
     }
 
     if (newQuestion.type == "MULTIPLE_CHOICE") {
